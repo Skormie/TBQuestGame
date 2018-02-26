@@ -1,0 +1,17 @@
+        public void DisplayArea(int row, int column, int y, int x)
+        {
+            for (int rowc = row; rowc < row + y; rowc++)
+            {
+                Console.SetCursorPosition(column, rowc);
+                string temp = "";
+                for (int columnc = column; columnc < column + x; columnc++) {
+                    _sceneCompiledView[columnc, rowc] = _scene[columnc, rowc, 1];
+                    if ( _scene[columnc, rowc, 0] != '\0' && _scene[columnc, rowc, 0] != '\n')
+                        _sceneCompiledView[columnc, rowc] = _scene[columnc, rowc, 0];
+                    temp += _sceneCompiledView[columnc, rowc];
+                }
+                Console.Write(temp);
+                //Thread.Sleep(5);
+            }
+        }
+

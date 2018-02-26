@@ -1,0 +1,30 @@
+--Sizes--
+
+-Window-
+200x40
+
+-Background-
+96x36
+
+-Tile-
+8x8
+
+
+
+--Player Animations--
+
+-Idle-
+hero
+
+-Run buildup-
+heroR1,heroR2
+
+-Run-
+heroR3,heroR4,heroR5,heroR4
+
+
+
+--Enemy Animations--
+
+-Goblin move-
+enemy1, enemy2

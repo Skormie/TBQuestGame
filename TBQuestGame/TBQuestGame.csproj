@@ -44,13 +44,16 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConsoleView.cs" />
-    <Compile Include="Player.cs" />
+    <Compile Include="Controllers\Controller.cs" />
+    <Compile Include="Models\Object.cs" />
+    <Compile Include="Views\ConsoleView.cs" />
+    <Compile Include="Models\Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
