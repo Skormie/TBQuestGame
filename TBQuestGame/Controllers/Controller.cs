@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,17 +13,23 @@ namespace TBQuestGame
     {
         private bool playerDisplayed = false;
         private Player player;
+        private Map map;
         private ConsoleView scene;
+        private int stage;
+        private bool object_animation = false;
 
         void ProgramLoop()
         {
+            int count =  0;
             while (!Keyboard.IsKeyDown(Key.Escape))
             {
+                count++;
                 Thread.Sleep(10);
                 if (KeyDown(Key.Right) && player.Location[1] < Console.WindowWidth - 38)
                 {
                     player.Location[1] += 1;
-                    player.Animation = 1;
+                    if(player.Animation != 2)
+                        player.Animation = 1;
                     player.PrintObject(scene);
                     scene.DisplayArea(player.Location[0] - 1, player.Location[1] + 3, player.Height, player.Width);
                     playerDisplayed = false;
@@ -31,7 +37,7 @@ namespace TBQuestGame
                 else if (KeyDown(Key.Left) && player.Location[1] > 0)
                 {
                     player.Location[1] -= 1;
-                    player.Animation = 2;
+                    player.Animation = 3;
                     player.PrintObject(scene);
                     scene.DisplayArea(player.Location[0] - 1, player.Location[1] + 3, player.Height, player.Width);
                     playerDisplayed = false;
@@ -42,6 +48,12 @@ namespace TBQuestGame
                     player.PrintObject(scene);
                     scene.DisplayArea(player.Location[0] - 1, player.Location[1] + 3, player.Height, player.Width);
                     playerDisplayed = true;
+                }
+                if(count % 100 == 0)
+                {
+                    foreach (Object item in map.Universe[stage].Objects)
+                        scene.DisplayAreaLayer(item.Location[0] - 1, item.Location[1], item.Height, item.Width, object_animation ? 2 : 3);
+                    object_animation = !object_animation;
                 }
             }
         }
@@ -55,29 +67,14 @@ namespace TBQuestGame
 
         private void InitializeGame()
         {
-            player = new Player(10, 25, 22, 9, new List<List<string>>());
-            Object torch = new Object(100, 10, 22, 9,
-                new List<List<string>>() {
-                    new List<string>() {
-                        "\0        \n" +
-                        "\0   █    \n" +
-                        "\0  █ █   \n" +
-                        "\0 ███ █  \n" +
-                        "\0██    █ \n" +
-                        "\0 █   █  \n" +
-                        "\0  █ █   \n" +
-                        "\0███████ \n" +
-                        "\0  ███   \n" +
-                        "\0        \n"
-                    }
-                }
-            );
-            scene = new ConsoleView(player);
-            //Console.CursorVisible = false;
+            stage = 1;
+            map = new Map();
+            player = new Player(10, 26, 22, 9, new List<List<string>>());
+            scene = new ConsoleView(player, map);
+            Console.CursorVisible = false;
             scene.SetupConsoleDisplay();
             scene.SplashScreen();
-            scene.CreateBackground();
-            torch.PrintObject(scene, 1);
+            scene.CreateBackground(stage);
             scene.DisplayBackground();
             player.PrintObject(scene);
         }

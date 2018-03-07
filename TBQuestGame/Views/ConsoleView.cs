@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,9 +11,10 @@ namespace TBQuestGame
     {
         static public int _windowWidth = 160;
         static public int _windowHeight = 40;
-        static public int _layerDepth = 2;
+        static public int _layerDepth = 4;
         public char[,,] _scene = new char[_windowWidth, _windowHeight, _layerDepth];
         public Player _player;
+        public Map _map;
 
         public string background =
             "██    ██\n" +
@@ -23,27 +24,58 @@ namespace TBQuestGame
             "  ████  \n" +
             "   ██   \n" +
             "   ██   \n" +
-            "  ████  \n";
+            "  ████  \n" +
+            "██    ██\n" +
+            "█      █\n" +
+            "█      █\n" +
+            "██    ██\n" +
+            "  ████  \n" +
+            "   ██   \n" +
+            "   ██   \n" +
+            "  ████  \n" +
+            "██    ██\n" +
+            "█      █\n" +
+            "█      █\n" +
+            "██    ██\n" +
+            "  ████  \n" +
+            "   ██   \n" +
+            "   ██   \n" +
+            "  ████  \n" +
+            "██    ██\n" +
+            "█      █\n" +
+            "█      █\n" +
+            "██    ██\n" +
+            "  ████  \n" +
+            "   ██   \n" +
+            "   ██   \n" +
+            "  ████  \n" +
+            "████████\n" +
+            " ██  ██ \n" +
+            "  ██  ██\n" +
+            "█  ██  █\n";
 
         public System.Timers.Timer timer = new System.Timers.Timer();
 
-        public ConsoleView( Player player )
+        public ConsoleView( Player player, Map map )
         {
             _player = player;
+            _map = map;
             timer.Elapsed += new System.Timers.ElapsedEventHandler(Timer_Elapsed);
             timer.Interval = 0.1;
             timer.Start();
         }
 
-        public void CreateBackground ()
+        public void CreateBackground ( int stage )
         {
             int i = 1;
             int k = 3;
-            for (int row = 0; row < _scene.GetLength(1) - 9; row+=8)
+            int height = _map.Universe[stage].Background.Length - _map.Universe[stage].Background.Replace("\n", "").Length;
+            int width = _map.Universe[stage].Background.IndexOf('\n');
+            for (int row = 0; row < _scene.GetLength(1) - height; row += height)
             {
-                for (int column = 0; column < _scene.GetLength(0) - 17; column+=16)
+                for (int column = 0; column < _scene.GetLength(0) - (width * 2); column += (width * 2))
                 {
-                    foreach (char item in background)
+                    foreach (char item in _map.Universe[stage].Background)
                     {
                         if (item != '\n')
                         {
@@ -60,6 +92,8 @@ namespace TBQuestGame
                     i = 1;
                 }
             }
+            foreach (Object item in _map.Universe[stage].Objects)
+                item.PrintObject(this);
         }
 
         public void SetupConsoleDisplay()
@@ -92,7 +126,7 @@ namespace TBQuestGame
 
         public void DisplayArea(int row, int column, int y, int x)
         {
-            for (int layer = 1; layer > -1; layer--)
+            for (int layer = 2; layer > -1; layer--)
             {
                 if (layer == 0)
                 {
@@ -100,7 +134,7 @@ namespace TBQuestGame
                     column += 1;
                     y -= 1;
                     x -= 2;
-                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.ForegroundColor = ConsoleColor.White;
                 }
                 if(layer == 1)
                     Console.ForegroundColor = ConsoleColor.DarkGray;
@@ -114,6 +148,21 @@ namespace TBQuestGame
                     }
                     Console.Write(temp);
                 }
+            }
+        }
+
+        public void DisplayAreaLayer(int row, int column, int y, int x, int layer = 1)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            for (int rowc = row; rowc < row + y; rowc++)
+            {
+                Console.SetCursorPosition(column, rowc);
+                string temp = "";
+                for (int columnc = column; columnc < column + x; columnc++)
+                {
+                    temp += _scene[columnc, rowc, layer];
+                }
+                Console.Write(temp);
             }
         }
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,6 +17,7 @@ namespace TBQuestGame
 
         //static System.Timers.Timer timer = new System.Timers.Timer();
 
+        //private List<List<string>> _sprites;
         private List<List<string>> _sprites;
 
         //"   █████    \n"+
@@ -96,26 +97,33 @@ namespace TBQuestGame
             //timer.Start();
         }
 
-        public virtual void PrintObject(ConsoleView cv, int layer = 0)
+        public virtual void PrintObject(ConsoleView cv, int layer = 2, int animation = 0, int sprite = 0)
         {
             int i = 0;
             int k = 2;
             int initAni = Animation;
-            foreach (char item in _sprites[Animation][0])
+            foreach (List<string> Sprite in _sprites)
             {
-                if (item != '\n')
+                foreach (string String in Sprite)
                 {
-                    cv.SetMapInfo(location[1] + k, location[0] + i, layer, item);
-                    cv.SetMapInfo(location[1] + k + 1, location[0] + i, layer, item);
+                    foreach (char item in String)
+                    {
+                        if (item != '\n')
+                        {
+                            cv.SetMapInfo(location[1] + k, location[0] + i, layer, item);
+                            cv.SetMapInfo(location[1] + k + 1, location[0] + i, layer, item);
+                        }
+                        else
+                        {
+                            i++;
+                            k = 0;
+                        }
+                        k += 2;
+                    }
+                    i = 0;
                 }
-                else
-                {
-                    i++;
-                    k = 0;
-                }
-                k += 2;
+                layer++;
             }
-            i = 0;
         }
         #endregion
     }
