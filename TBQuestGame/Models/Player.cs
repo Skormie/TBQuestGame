@@ -9,9 +9,45 @@ namespace TBQuestGame
 {
     public class Player : Object
     {
-        int current_anim;
-        int current_frame;
-        int tick = 0;
+        private bool _playerDisplayed;
+        private List<Object> _inventory;
+        private bool _inventoryInit;
+        private bool _itemInit;
+        private int[] _curserPos = new int[2];
+        private int _inventoryOffset;
+
+        public int InventoryOffset
+        {
+            get { return _inventoryOffset; }
+            set { _inventoryOffset = value; }
+        }
+
+
+        public int[] CurserPos
+        {
+            get { return _curserPos; }
+            set { _curserPos = value; }
+        }
+
+
+        public bool ItemInit
+        {
+            get { return _itemInit; }
+            set { _itemInit = value; }
+        }
+
+        public bool InventoryInit
+        {
+            get { return _inventoryInit; }
+            set { _inventoryInit = value; }
+        }
+
+        public List<Object> Inventory
+        {
+            get { return _inventory; }
+            set { _inventory = value; }
+        }
+
 
         private List<List<string>> _sprites = new List<List<string>>()
         {
@@ -100,8 +136,15 @@ namespace TBQuestGame
             }
         };
 
-        public Player( int x, int y, int width, int height, List<List<string>> sprite  ) : base( x, y, width, height, sprite)
+        public bool PlayerDisplayed
         {
+            get { return _playerDisplayed; }
+            set { _playerDisplayed = value; }
+        }
+
+        public Player( int x, int y, int width, int height, List<List<string>> sprite, int layer = 0  ) : base( x, y, width, height, sprite, layer)
+        {
+            Inventory = new List<Object>();
             Sprite = _sprites;
         }
 
@@ -109,22 +152,22 @@ namespace TBQuestGame
         {
             int i = 0;
             int k = 2;
-            tick++;
+            Tick++;
             int initAni = Animation;
-            if (current_anim != Animation)
+            if (CurrentAnim != Animation)
             {
-                current_anim = Animation;
-                current_frame = 0;
+                CurrentAnim = Animation;
+                CurrentFrame = 0;
             }
-            else if (tick % 15 == 0)
+            else if (Tick % 15 == 0)
             {
-                current_frame = ++current_frame % _sprites[Animation].Count();
-                if(Animation == 1 && current_frame == 2)
+                CurrentFrame = ++CurrentFrame % _sprites[Animation].Count();
+                if(Animation == 1 && CurrentFrame == 2)
                 {
                     Animation = 2;
                 }
             }
-            foreach (char item in _sprites[Animation][current_frame])
+            foreach (char item in _sprites[Animation][CurrentFrame])
             {
                 if (item != '\n')
                 {
