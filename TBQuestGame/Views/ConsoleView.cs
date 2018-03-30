@@ -16,7 +16,7 @@ namespace TBQuestGame
         // Layer 2 - Animated Objects Frame 2
         // Layer 3 - Lootable Objects
         // Layer 4 - Background
-        static public int _windowWidth = 192;
+        public static int _windowWidth = 192;
         static public int _windowHeight = 40;
         static public int _layerDepth = 5;
         public char[,,] _scene = new char[_windowWidth, _windowHeight, _layerDepth];
@@ -31,38 +31,39 @@ namespace TBQuestGame
             _map = map;
         }
 
-        public void LoadBackground ( int stage )
-        {
-            int i = 1;
-            int k = 3;
-            int height = _map.Universe[stage].Background.Length - _map.Universe[stage].Background.Replace("\n", "").Length;
-            int width = _map.Universe[stage].Background.IndexOf('\n');
-            for (int row = 0; row < _scene.GetLength(1) - height; row += height)
-            {
-                for (int column = 0; column < _scene.GetLength(0) - (width * 2); column += (width * 2))
-                {
-                    foreach (char item in _map.Universe[stage].Background)
-                    {
-                        if (item != '\n')
-                        {
-                            SetMapInfo(column + k, row + i, 1, item);
-                            SetMapInfo(column + k + 1, row + i, 1, item);
-                            SetMapInfo(column + k, row + i, 4, item);
-                            SetMapInfo(column + k + 1, row + i, 4, item);
-                        }
-                        else
-                        {
-                            i++;
-                            k = 1;
-                        }
-                        k += 2;
-                    }
-                    i = 1;
-                }
-            }
-            foreach (Object item in _map.Universe[stage].Objects)
-                item.PrintObject(this);
-        }
+        //Antiquated Code
+        //public void LoadBackground ( int stage )
+        //{
+        //    int i = 1;
+        //    int k = 3;
+        //    int height = _map.Universe[stage].Background.Length - _map.Universe[stage].Background.Replace("\n", "").Length;
+        //    int width = _map.Universe[stage].Background.IndexOf('\n');
+        //    for (int row = 0; row < _scene.GetLength(1) - height; row += height)
+        //    {
+        //        for (int column = 0; column < _scene.GetLength(0) - (width * 2); column += (width * 2))
+        //        {
+        //            foreach (char item in _map.Universe[stage].Background)
+        //            {
+        //                if (item != '\n')
+        //                {
+        //                    SetMapInfo(column + k, row + i, 1, item);
+        //                    SetMapInfo(column + k + 1, row + i, 1, item);
+        //                    SetMapInfo(column + k, row + i, 4, item);
+        //                    SetMapInfo(column + k + 1, row + i, 4, item);
+        //                }
+        //                else
+        //                {
+        //                    i++;
+        //                    k = 1;
+        //                }
+        //                k += 2;
+        //            }
+        //            i = 1;
+        //        }
+        //    }
+        //    foreach (Object item in _map.Universe[stage].Objects)
+        //        item.PrintObject(this);
+        //}
 
         public void SetupConsoleDisplay()
         {
@@ -137,7 +138,8 @@ namespace TBQuestGame
             Console.SetCursorPosition(column + horizontal_padding, rowr);
             foreach (char item in text)
             {
-                if(i >= size)
+                ClearInputBuffer();
+                if (i >= size)
                 {
                     if(rowr < row + y_size - vertical_padding) {
                         rowr++;
@@ -169,12 +171,13 @@ namespace TBQuestGame
             Console.ReadLine();
 
             //DisplayArea( row, column, y_size, x_size );
+            DisplayAreaLayer(row, column, y_size, x_size);
             _player.PlayerDisplayed = false;
-            DisplayBackground();
         }
 
         public void DisplayInventory(int row, int column, int y_size, int x_size, int horizontal_padding, int vertical_padding, string title, string text)
         {
+            ClearInputBuffer();
             string width = "";
             for (int j = 0; j < x_size; j++) width += " ";
             int size = width.Count() - horizontal_padding * 2;
@@ -281,6 +284,7 @@ namespace TBQuestGame
 
         public void DisplayBackground()
         {
+            Console.Clear();
             Console.ForegroundColor = ConsoleColor.DarkGray;
             for (int row = 0; row < _scene.GetLength(1) - 1; row++)
             {
@@ -312,6 +316,8 @@ namespace TBQuestGame
             Console.Clear();
         }
 
+
+        //Code Modifed from "https://stackoverflow.com/questions/33538527/display-a-image-in-a-console-application" by @DieterMeemken accessed Thursday, March 29th, 2018.
         static int[] cColors = { 0x000000, 0x000080, 0x008000, 0x008080, 0x800000, 0x800080, 0x808000, 0xC0C0C0, 0x808080, 0x0000FF, 0x00FF00, 0x00FFFF, 0xFF0000, 0xFF00FF, 0xFFFF00, 0xFFFFFF };
 
         public void ConsoleWritePixel(Color cValue, int j, int i)
@@ -358,9 +364,9 @@ namespace TBQuestGame
         }
 
 
-        public void ConsoleWriteImage(Bitmap source, int stage)
+        public void ConsoleWriteImage(int stage)
         {
-            int h = 0;
+            Bitmap source = new Bitmap(@System.IO.Directory.GetCurrentDirectory() + _map.Universe[stage].Background, true);
             for (int i = 0; i < source.Height; i++)
             {
                 for (int j = 0; j < source.Width; j++)
@@ -373,6 +379,16 @@ namespace TBQuestGame
             Console.ResetColor();
             foreach (Object item in _map.Universe[stage].Objects)
                 item.PrintObject(this);
+        }
+
+        //Code Modifed from "https://stackoverflow.com/questions/3769770/clear-console-buffer" by gandjustas accessed Thursday, March 29th, 2018.
+        public void ClearInputBuffer()
+        {
+            while (Console.KeyAvailable)
+            {
+                Console.ReadKey(true);
+            }
+            //Console.ReadKey();
         }
     }
 }

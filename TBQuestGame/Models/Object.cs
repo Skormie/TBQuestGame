@@ -28,7 +28,7 @@ namespace TBQuestGame
         }
 
 
-        private List<List<string>> _sprites;
+        private List<string> _sprites;
 
         //"   █████    \n"+
         //"  █████████ \n" +
@@ -104,13 +104,14 @@ namespace TBQuestGame
             set { _print = value; }
         }
 
+        // Y X
         public int[] Location
         {
             get { return _location; }
             set { _location = value; }
         }
 
-        public virtual List<List<string>> Sprite
+        public virtual List<string> Sprite
         {
             get { return _sprites; }
             set { _sprites = value; }
@@ -118,16 +119,16 @@ namespace TBQuestGame
 
         #endregion
 
-        public Object(int x, int y, int width, int height, List<List<string>> sprite, int layer = 1, string name = "")
-        {
-            Location[1] = x;
-            Location[0] = y;
-            Width = width;
-            Height = height;
-            Sprite = sprite;
-            Layer = layer;
-            Name = name;
-        }
+        //public Object(int x, int y, int width, int height, List<List<string>> sprite, int layer = 1, string name = "")
+        //{
+        //    Location[1] = x;
+        //    Location[0] = y;
+        //    Width = width;
+        //    Height = height;
+        //    Sprite = sprite;
+        //    Layer = layer;
+        //    Name = name;
+        //}
 
         #region Methods
 
@@ -142,26 +143,23 @@ namespace TBQuestGame
             int k = 2;
             int initAni = Animation;
             layer = Layer;
-            foreach (List<string> Sprite in _sprites)
+            foreach (string String in Sprite)
             {
-                foreach (string String in Sprite)
+                foreach (char item in String)
                 {
-                    foreach (char item in String)
+                    if (item != '\n')
                     {
-                        if (item != '\n')
-                        {
-                            cv.SetMapInfo(_location[1] + k, _location[0] + i, layer, item);
-                            cv.SetMapInfo(_location[1] + k + 1, _location[0] + i, layer, item);
-                        }
-                        else
-                        {
-                            i++;
-                            k = 0;
-                        }
-                        k += 2;
+                        cv.SetMapInfo(_location[1] + k, _location[0] + i, layer, item);
+                        cv.SetMapInfo(_location[1] + k + 1, _location[0] + i, layer, item);
                     }
-                    i = 0;
+                    else
+                    {
+                        i++;
+                        k = 0;
+                    }
+                    k += 2;
                 }
+                i = 0;
                 layer++;
             }
         }

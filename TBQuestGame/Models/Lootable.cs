@@ -6,7 +6,24 @@ using System.Threading.Tasks;
 
 namespace TBQuestGame
 {
-    class Lootable
+    abstract class Lootable : Object
     {
+        public string Description { get; set; }
+        public bool CanDrop { get; set; }
+        public int SellPrice { get; set; }
+        public int BuyPrice { get; set; }
+
+        public abstract void Use();
+
+        void Look()
+        {
+            
+        }
+
+        void Drop()
+        {
+
+        }
+
     }
 }

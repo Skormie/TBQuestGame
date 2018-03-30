@@ -24,6 +24,7 @@ namespace TBQuestGame
             while (!Keyboard.IsKeyDown(Key.Escape))
             {
                 count++;
+                scene.ClearInputBuffer();
                 Thread.Sleep(10);
 
                 if (player.InventoryInit)
@@ -46,12 +47,14 @@ namespace TBQuestGame
                 }
 
                 if (KeyDown(Key.Space))
+                {
                     scene.DisplayText(2, 27, 13, 100, 8, 5, "NPC NAME", "THIS IS SOME TEXT.");
+                }
 
                 if(KeyDown(Key.P))
                     SearchPlayerArea();
 
-                if (KeyDown(Key.Right) && player.Location[1] < Console.WindowWidth - 38)
+                if (KeyDown(Key.Right) && player.Location[1] < Console.WindowWidth - 25)
                 {
                     player.Location[1] += 1;
                     if (player.Animation != 2)
@@ -62,10 +65,11 @@ namespace TBQuestGame
                 }
                 else if (KeyDown(Key.Right) && stage + 1 < map.Universe.Count())
                 {
-                    scene.LoadBackground(++stage);
+                    //scene.LoadBackground(++stage);
+                    scene.ConsoleWriteImage(++stage);
                     scene.DisplayBackground();
                 }
-                else if (KeyDown(Key.Left) && player.Location[1] > 0)
+                else if (KeyDown(Key.Left) && player.Location[1] + 2 > 0)
                 {
                     player.Location[1] -= 1;
                     player.Animation = 3;
@@ -75,7 +79,8 @@ namespace TBQuestGame
                 }
                 else if (KeyDown(Key.Left) && stage > 0)
                 {
-                    scene.LoadBackground(--stage);
+                    //scene.LoadBackground(--stage);
+                    scene.ConsoleWriteImage(--stage);
                     scene.DisplayBackground();
                 }
                 else if (!player.PlayerDisplayed)
@@ -96,16 +101,15 @@ namespace TBQuestGame
 
         private void InitializeGame()
         {
-            stage = 1;
+            stage = 0;
             map = new Map();
-            player = new Player(10, 26, 22, 9, new List<List<string>>());
+            player = new Player() { Location = new int[2] { 26, 10 }, Width = 22, Height = 9, Inventory = new List<Object>() };
             scene = new ConsoleView(player, map);
             Console.CursorVisible = false;
             scene.SetupConsoleDisplay();
             scene.SplashScreen();
             //scene.LoadBackground(stage);
-            Bitmap bmpSrc = new Bitmap(@"H:\Classes Spring 2018\CIT 195\Week 5\Class 2\TBQuestGame\TBQuestGFX\Rooms\Dungeon\dungeon2-2.png", true);
-            scene.ConsoleWriteImage(bmpSrc,stage);
+            scene.ConsoleWriteImage(stage);
             scene.DisplayBackground();
             player.PrintObject(scene);
         }
@@ -119,7 +123,7 @@ namespace TBQuestGame
 
         void ManagePlayerInventory()
         {
-            if (KeyDown(Key.Enter))
+            if (KeyDown(Key.Enter) && scene._inventoryView.Count() > 0)
             {
                 player.Inventory.Remove(scene._inventoryView[inventoryPos]);
                 scene.DisplayInventory(2, 27, 20, 50, 8, 5, "Inventory", "");
@@ -136,7 +140,9 @@ namespace TBQuestGame
             {
                 player.InventoryInit = false;
                 player.PlayerDisplayed = false;
-                scene.DisplayBackground();
+                scene.DisplayAreaLayer(2, 27, 20, 50);
+                Thread.Sleep(50);
+                //scene.DisplayBackground();
             }
         }
 

@@ -19,105 +19,11 @@ namespace TBQuestGame
 
         public Map()
         {
+
             universe = new List<Stage>();
-            universe.Add(
-                new Stage(
-                    "        \n" +
-                    "        \n" +
-                    "        \n" +
-                    "        \n" +
-                    "        \n" +
-                    "        \n" +
-                    "        \n" +
-                    "        \n" +
-                    "        \n" +
-                    "        \n" +
-                    "        \n" +
-                    "        \n" +
-                    "        \n" +
-                    "        \n" +
-                    "        \n" +
-                    "        \n" +
-                    "        \n" +
-                    "        \n" +
-                    "        \n" +
-                    "   █    \n" +
-                    "   █ █  \n" +
-                    "  █  █  \n" +
-                    "  █ █   \n" +
-                    "  █ █  █\n" +
-                    " █ █  █ \n" +
-                    " █ █  █ \n" +
-                    " █ █ █  \n" +
-                    " █ █ █  \n" +
-                    "█ █  █  \n" +
-                    "█ █ █   \n" +
-                    "█ █ █   \n" +
-                    "█ █ █   \n" +
-                    "████████\n" +
-                    "█ ██ ██ \n" +
-                    "██ ██ ██\n" +
-                    "████████\n",
-                    new List<Object>()
-                    {
-                        new Object(100, 10, 15, 10,
-                            new List<List<string>>() {
-                                new List<string>() {
-                                    "    █   \n" +
-                                    "   █ █  \n" +
-                                    "  █ █ █ \n" +
-                                    " █ █  █ \n" +
-                                    " █    █ \n" +
-                                    "  █  █  \n" +
-                                    " ██████ \n" +
-                                    "  █  █  \n" +
-                                    "   ██   \n"
-                                },
-                                new List<string>() {
-                                    "   █    \n" +
-                                    "  █ █   \n" +
-                                    " █ █ █  \n" +
-                                    " █  █ █ \n" +
-                                    " █    █ \n" +
-                                    "  █  █  \n" +
-                                    " ██████ \n" +
-                                    "  █  █  \n" +
-                                    "   ██   \n"
-                                }
-                            }
-                        ),
-                        new Object(20, 10, 15, 10,
-                            new List<List<string>>() {
-                                new List<string>() {
-                                    "   █  \n" +
-                                    "  █ █ \n" +
-                                    " █ █ █\n" +
-                                    "█ █  █\n" +
-                                    "█    █\n" +
-                                    " █  █ \n" +
-                                    "██████\n" +
-                                    " █  █ \n" +
-                                    "  ██  \n"
-                                },
-                                new List<string>() {
-                                    "  █   \n" +
-                                    " █ █  \n" +
-                                    "█ █ █ \n" +
-                                    "█  █ █\n" +
-                                    "█    █\n" +
-                                    " █  █ \n" +
-                                    "██████\n" +
-                                    " █  █ \n" +
-                                    "  ██  \n"
-                                }
-                            }
-                        )
-                    }
-                )
-            );
-
+            universe.Add(Stages.field);
+            universe.Add(Stages.field);
             universe.Add(Stages.ditherDungeon);
-
             universe.Add(Stages.lightDungeon);
         }
     }

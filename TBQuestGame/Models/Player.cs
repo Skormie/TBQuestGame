@@ -142,12 +142,6 @@ namespace TBQuestGame
             set { _playerDisplayed = value; }
         }
 
-        public Player( int x, int y, int width, int height, List<List<string>> sprite, int layer = 0  ) : base( x, y, width, height, sprite, layer)
-        {
-            Inventory = new List<Object>();
-            Sprite = _sprites;
-        }
-
         public override void PrintObject(ConsoleView cv, int layer = 0, int animation = 0, int sprite = 0)
         {
             int i = 0;
