@@ -15,6 +15,12 @@ namespace TBQuestGame
         private bool _itemInit;
         private int[] _curserPos = new int[2];
         private int _inventoryOffset;
+        public int Gold { get; set; }
+        public double Health { get; set; }
+        public double MaxHealth { get; set; }
+        public int Experience { get; set; }
+        public int NextExperience { get; set; }
+        public int Level { get; set; }
 
         public int InventoryOffset
         {
@@ -142,12 +148,11 @@ namespace TBQuestGame
             set { _playerDisplayed = value; }
         }
 
-        public override void PrintObject(ConsoleView cv, int layer = 0, int animation = 0, int sprite = 0)
+        public override void PrintObject(ConsoleView cv, int layer = 0)
         {
             int i = 0;
             int k = 2;
             Tick++;
-            int initAni = Animation;
             if (CurrentAnim != Animation)
             {
                 CurrentAnim = Animation;
@@ -157,9 +162,7 @@ namespace TBQuestGame
             {
                 CurrentFrame = ++CurrentFrame % _sprites[Animation].Count();
                 if(Animation == 1 && CurrentFrame == 2)
-                {
                     Animation = 2;
-                }
             }
             foreach (char item in _sprites[Animation][CurrentFrame])
             {

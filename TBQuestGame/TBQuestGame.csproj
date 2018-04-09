@@ -45,12 +45,17 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Delegates.cs" />
     <Compile Include="Assets\Sprites.cs" />
     <Compile Include="Controllers\Controller.cs" />
+    <Compile Include="Models\Door.cs" />
+    <Compile Include="Models\Lootables\Key.cs" />
     <Compile Include="Models\Lootable.cs" />
     <Compile Include="Models\Map.cs" />
+    <Compile Include="Models\Lootables\Misc.cs" />
     <Compile Include="Models\NPC.cs" />
-    <Compile Include="Models\Potion.cs" />
+    <Compile Include="Models\Lootables\Potion.cs" />
+    <Compile Include="Models\Sprite.cs" />
     <Compile Include="Models\Stage.cs" />
     <Compile Include="Models\Object.cs" />
     <Compile Include="Assets\Stages.cs" />

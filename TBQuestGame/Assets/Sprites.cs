@@ -8,9 +8,11 @@ namespace TBQuestGame
 {
     public static class Sprites
     {
-        public static Dictionary<string, List<string>> sprite = new Dictionary<string, List<string>>()
+        public static Dictionary<string, Sprite> sprite = new Dictionary<string, Sprite>()
         {
-            { "torch", new List<string>() {
+            { "torch", new Sprite
+            (
+                new List<string>() {
                     "    █   \n" +
                     "   █ █  \n" +
                     "  █ █ █ \n" +
@@ -31,24 +33,101 @@ namespace TBQuestGame
                     "  █  █  \n" +
                     "   ██   \n"
                 }
+            )
             },
-            { "shinyThing", new List<string>() {
-                    "        \n" +
-                    "        \n" +
-                    "    █   \n" +
-                    "   ███  \n" +
-                    "    █   \n" +
-                    "        \n" +
-                    "        \n"
+            { "shinyThing", new Sprite
+            (
+                new List<string>() {
+                    "         \n" +
+                    "         \n" +
+                    "    █    \n" +
+                    "   ███   \n" +
+                    "    █    \n" +
+                    "         \n" +
+                    "         \n"
                 ,
-                    "        \n" +
-                    "    █   \n" +
-                    "        \n" +
-                    " █  █  █\n" +
-                    "        \n" +
-                    "    █   \n" +
-                    "        \n"
+                    "         \n" +
+                    "    █    \n" +
+                    "         \n" +
+                    " █  █  █ \n" +
+                    "         \n" +
+                    "    █    \n" +
+                    "         \n"
                 }
+            )
+            },
+            { "potion1", new Sprite
+            (
+                new List<string>() {
+                    "     \n" +
+                    "  █  \n" +
+                    "  █  \n" +
+                    " █ █ \n" +
+                    " ███ \n" +
+                    "     \n"
+                }
+            )
+            },
+            { "potion2", new Sprite
+            (
+                new List<string>() {
+                    "       \n" +
+                    "   █   \n" +
+                    "   █   \n" +
+                    "  █ █  \n" +
+                    " █   █ \n" +
+                    " █████ \n" +
+                    "       \n"
+                }
+            )
+            },
+            { "potion3", new Sprite
+            (
+                new List<string>() {
+                    "       \n" +
+                    "   █   \n" +
+                    "  █ █  \n" +
+                    " █   █ \n" +
+                    " █   █ \n" +
+                    " █████ \n" +
+                    "       \n"
+                }
+            )
+            },
+            { "door", new Sprite
+            (
+                new List<string>() {
+                    "  █   █  █   █  \n" +
+                    "   █ █ ██ █ █   \n" +
+                    "█ █ █ ████ █ █ █\n" +
+                    " █ █ ██████ █ █ \n" +
+                    "█ █ █      █ █ █\n" +
+                    " ███        ███ \n" +
+                    "█ █          █ █\n" +
+                    " ██          ██ \n" +
+                    "█ █          █ █\n" +
+                    " ██          ██ \n" +
+                    "█ █          █ █\n" +
+                    " ██          ██ \n" +
+                    "█ █          █ █\n" +
+                    " ██          ██ \n" +
+                    "█ █          █ █\n" +
+                    " ██          ██ \n" +
+                    "█ █          █ █\n" +
+                    " ██          ██ \n" +
+                    "█ █          █ █\n"
+                }
+            )
+            },
+            { "key", new Sprite
+            (
+                new List<string>() {
+                    "        \n" +
+                    " ██     \n" +
+                    " █ ████ \n" +
+                    " ██ █ █ \n"
+                }
+            )
             }
         };
     }

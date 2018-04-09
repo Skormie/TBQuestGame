@@ -17,38 +17,18 @@ namespace TBQuestGame
         private int _currentAnim;
         private int _currentFrame;
         private int _tick;
-        private int _layer;
+        private int _layer = ConsoleView.bkgLayer;
         private string _name;
         private int[] _inventoryLoc = new int[2];
+        private List<string> _sprites;
+        #endregion
 
+        #region Properties
         public int[] InventoryLoc
         {
             get { return _inventoryLoc; }
             set { _inventoryLoc = value; }
         }
-
-
-        private List<string> _sprites;
-
-        //"   █████    \n"+
-        //"  █████████ \n" +
-        //"  ███████   \n" +
-        //" ██████████ \n" +
-        //" ███████████\n" +
-        //" ██████████ \n" +
-        //"   ███████  \n" +
-        //"  ██████    \n" +
-        //" ██████████ \n" +
-        //"████████████\n" +
-        //"████████████\n" +
-        //"████████████\n" +
-        //"████████████\n" +
-        //"  ███  ███  \n" +
-        //" ███    ███ \n" +
-        //"████    ████";
-        #endregion
-
-        #region Properties
 
         public string Name
         {
@@ -119,29 +99,25 @@ namespace TBQuestGame
 
         #endregion
 
-        //public Object(int x, int y, int width, int height, List<List<string>> sprite, int layer = 1, string name = "")
-        //{
-        //    Location[1] = x;
-        //    Location[0] = y;
-        //    Width = width;
-        //    Height = height;
-        //    Sprite = sprite;
-        //    Layer = layer;
-        //    Name = name;
-        //}
+        public Object() { }
+
+        public Object(Sprite sprite)
+        {
+            Width = sprite.Width;
+            Height = sprite.Height;
+            Sprite = sprite.Sprites;
+        }
 
         #region Methods
-
         public int GetObjectFrame()
         {
             return (++_currentFrame % Sprite.Count()) + Layer;
         }
 
-        public virtual void PrintObject(ConsoleView cv, int layer = 1, int animation = 0, int sprite = 0)
+        public virtual void PrintObject(ConsoleView cv, int layer = ConsoleView.bkgLayer)
         {
             int i = 0;
             int k = 2;
-            int initAni = Animation;
             layer = Layer;
             foreach (string String in Sprite)
             {

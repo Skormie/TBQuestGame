@@ -19,30 +19,14 @@ namespace TBQuestGame
 
         public Map()
         {
-
-            universe = new List<Stage>();
-            universe.Add(Stages.field);
-            universe.Add(Stages.field);
-            universe.Add(Stages.ditherDungeon);
-            universe.Add(Stages.lightDungeon);
+            universe = new List<Stage>
+            {
+                Stages.shop,
+                Stages.lightDungeon,
+                Stages.ditherDungeon,
+                Stages.field,
+                Stages.field
+            };
         }
     }
 }
-
-
-                        //new Object(100, 10, 22, 9,
-                        //    new List<List<string>>() {
-                        //        new List<string>() {
-                        //            "\0        \n" +
-                        //            "\0   █    \n" +
-                        //            "\0  █ █   \n" +
-                        //            "\0 ███ █  \n" +
-                        //            "\0██    █ \n" +
-                        //            "\0 █   █  \n" +
-                        //            "\0  █ █   \n" +
-                        //            "\0███████ \n" +
-                        //            "\0  ███   \n" +
-                        //            "\0        \n"
-                        //        }
-                        //    }
-                        //)

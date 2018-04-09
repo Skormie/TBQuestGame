@@ -12,8 +12,9 @@ namespace TBQuestGame
         public bool CanDrop { get; set; }
         public int SellPrice { get; set; }
         public int BuyPrice { get; set; }
+        public int EffectInt { get; set; }
 
-        public abstract void Use();
+        public virtual void Use() { }
 
         void Look()
         {

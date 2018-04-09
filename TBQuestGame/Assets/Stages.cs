@@ -9,27 +9,36 @@ namespace TBQuestGame
     public static class Stages
     {
 
+        #region Field Stage
         private static List<Object> fieldObjects = new List<Object>()
         {
-            new Object() { Location = new int[2]{ 10, 121 }, Width = 16, Height = 11, Sprite = Sprites.sprite["torch"] },
-            new Object() { Location = new int[2]{ 10, 25 }, Width = 16, Height = 11, Sprite = Sprites.sprite["torch"] },
-            new Object() { Location = new int[2]{ 25, 25 }, Width = 18, Height = 7, Sprite = Sprites.sprite["shinyThing"], Name = "Shiny Thing", Layer = 3 },
-            new Object() { Location = new int[2]{ 25, 25 }, Width = 18, Height = 7, Sprite = Sprites.sprite["shinyThing"], Name = "Shiny Thing2", Layer = 3 }
+            new Object(Sprites.sprite["torch"]) { Location = new int[2]{ 10, 121 } },
+            new Object(Sprites.sprite["torch"]) { Location = new int[2]{ 10, 25 } },
+            new Misc(Sprites.sprite["shinyThing"]) { Location = new int[2]{ 25, 25 }, Name = "Shiny Thing", Layer = 1 },
+            new Misc(Sprites.sprite["shinyThing"]) { Location = new int[2]{ 25, 25 }, Name = "Shiny Thing2", Layer = 1 }
         };
-
         public static Stage field = new Stage(@"\TBQuestGFX\Rooms\Field\field1.png", fieldObjects);
+        #endregion
 
-
-        static List<Object> lightDungeonObjects = new List<Object>()
+        #region Light Dungeon Stage
+        static Misc lightdunKey = new Misc(Sprites.sprite["key"]) { Location = new int[2] { 25, 100 }, Name = "Light Dungeon Key", Layer = 1 };
+        private static List<Object> lightDungeonObjects = new List<Object>()
         {
-            new Object() { Location = new int[2]{ 10, 121 }, Width = 16, Height = 11, Sprite = Sprites.sprite["torch"] },
-            new Object() { Location = new int[2]{ 10, 25 }, Width = 16, Height = 11, Sprite = Sprites.sprite["torch"] },
-            new Object() { Location = new int[2]{ 25, 25 }, Width = 18, Height = 7, Sprite = Sprites.sprite["shinyThing"], Name = "Shiny Thing", Layer = 3 },
-            new Object() { Location = new int[2]{ 25, 25 }, Width = 18, Height = 7, Sprite = Sprites.sprite["shinyThing"], Name = "Shiny Thing2", Layer = 3 }
+            new Object(Sprites.sprite["torch"]) { Location = new int[2]{ 10, 121 }, Layer = 1 },
+            new Object(Sprites.sprite["torch"]) { Location = new int[2]{ 10, 25 } },
+            new Misc(Sprites.sprite["shinyThing"]) { Location = new int[2]{ 25, 25 }, Name = "Shiny Thing", Layer = 1 },
+            //new Object(Sprites.sprite["shinyThing"]) { Location = new int[2]{ 25, 25 }, Name = "No Loot!", Layer = 1 },
+            new Potion(Sprites.sprite["potion1"]) { Location = new int[2]{ 25, 50 }, Name = "Life Elixer", heal = 50, Use = new ItemMethod(Delegates.AddMaxHP), Description = "This potion will increase your max HP by 50.", Layer = 1 },
+            new Potion(Sprites.sprite["potion2"]) { Location = new int[2]{ 25, 70 }, Name = "Healing Potion", heal = 50, Use = new ItemMethod(Delegates.AddHP), Description = "This potion will increase your max HP by 50.", Layer = 1 },
+            new Door(Sprites.sprite["door"]) { Location = new int[2]{ 15, 120 }, Name = "Door", WarpMap = 0, WarpX = 10, WarpY = 26, DoorKey = lightdunKey, IsLocked = true },
+            lightdunKey
         };
         public static Stage lightDungeon = new Stage( @"\TBQuestGFX\Rooms\Dungeon\room1.png", lightDungeonObjects);
+        #endregion
 
-        public static Stage ditherDungeon = new Stage( @"\TBQuestGFX\Rooms\Dungeon\dungeon2-2.png", new List<Object>());
+        public static Stage shop = new Stage(@"\TBQuestGFX\Rooms\Towns\innershop.png", new List<Object>());
+
+        public static Stage ditherDungeon = new Stage(@"\TBQuestGFX\Rooms\Dungeon\dungeon2-2.png", new List<Object>());
 
     }
 }

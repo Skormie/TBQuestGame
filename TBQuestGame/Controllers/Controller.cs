@@ -15,7 +15,7 @@ namespace TBQuestGame
         private Player player;
         private Map map;
         private ConsoleView scene;
-        private int stage;
+        private int stage = 0;
         private int inventoryPos = 0;
 
         void ProgramLoop()
@@ -33,17 +33,24 @@ namespace TBQuestGame
                     continue;
                 }
 
+                if( KeyDown(Key.N) )
+                {
+                    scene.DisplayMenu(2, 50, 20, 50, 8, 5, "Test Menu", "Apple", "Grapes", "Strawberry", "Orange", "Fish");
+                    scene.DisplayAreaLayer(2, 50, 20, 50);
+                }
+
                 if (count % 100 == 0)
                 {
                     foreach (Object item in map.Universe[stage].Objects)
-                        scene.DisplayAreaLayer(item.Location[0], item.Location[1] + 2, item.Height, item.Width, item.GetObjectFrame());
+                        if (item.Sprite.Count > 1)
+                            scene.DisplayAreaLayer(item.Location[0], item.Location[1] + 2, item.Height, item.Width, item.GetObjectFrame());
                     player.PlayerDisplayed = false;
                 }
 
                 if (KeyDown(Key.I))
                 {
                     player.InventoryInit = true;
-                    scene.DisplayInventory(2, 27, 20, 50, 8, 5, "Inventory", "");
+                    scene.DisplayInventory(2, 27, 20, 50, 8, 5, "Inventory");
                 }
 
                 if (KeyDown(Key.Space))
@@ -65,9 +72,7 @@ namespace TBQuestGame
                 }
                 else if (KeyDown(Key.Right) && stage + 1 < map.Universe.Count())
                 {
-                    //scene.LoadBackground(++stage);
-                    scene.ConsoleWriteImage(++stage);
-                    scene.DisplayBackground();
+                    LoadStage(++stage);
                 }
                 else if (KeyDown(Key.Left) && player.Location[1] + 2 > 0)
                 {
@@ -79,9 +84,7 @@ namespace TBQuestGame
                 }
                 else if (KeyDown(Key.Left) && stage > 0)
                 {
-                    //scene.LoadBackground(--stage);
-                    scene.ConsoleWriteImage(--stage);
-                    scene.DisplayBackground();
+                    LoadStage(--stage);
                 }
                 else if (!player.PlayerDisplayed)
                 {
@@ -101,32 +104,80 @@ namespace TBQuestGame
 
         private void InitializeGame()
         {
-            stage = 0;
             map = new Map();
-            player = new Player() { Location = new int[2] { 26, 10 }, Width = 22, Height = 9, Inventory = new List<Object>() };
+            player = new Player() {
+                Name = "Hero",
+                Level = 1,
+                Location = new int[2] { 26, 10 },
+                Width = 22,
+                Height = 9,
+                Health = 30,
+                MaxHealth = 40,
+                Inventory = new List<Object>()
+            };
             scene = new ConsoleView(player, map);
             Console.CursorVisible = false;
             scene.SetupConsoleDisplay();
             scene.SplashScreen();
-            //scene.LoadBackground(stage);
-            scene.ConsoleWriteImage(stage);
-            scene.DisplayBackground();
-            player.PrintObject(scene);
+            LoadStage(stage);
         }
 
-        static bool KeyDown(Key pKey)
+        public static bool KeyDown(Key pKey)
         {
             if (Keyboard.IsKeyDown(pKey))
                 return true;
             return false;
         }
 
+        public static bool KeyUp(Key pKey)
+        {
+            if (Keyboard.IsKeyUp(pKey))
+                return true;
+            return false;
+        }
+
+        public static bool KeyPressed(Key pKey)
+        {
+            if (Keyboard.IsKeyDown(pKey))
+            {
+                Thread.Sleep(100);
+                if (Keyboard.IsKeyUp(pKey))
+                    return true;
+            }
+            return false;
+        }
+
         void ManagePlayerInventory()
         {
-            if (KeyDown(Key.Enter) && scene._inventoryView.Count() > 0)
+            if (KeyPressed(Key.Enter) && scene._inventoryView.Count() > 0)
             {
-                player.Inventory.Remove(scene._inventoryView[inventoryPos]);
-                scene.DisplayInventory(2, 27, 20, 50, 8, 5, "Inventory", "");
+                Lootable item = (Lootable)scene._inventoryView[inventoryPos];
+                switch (scene.DisplayMenu(2, 70, 20, 50, 8, 5, item.Name+" Options", "Use", "Look", "Drop", "Destroy"))
+                {
+                    case 0:
+                        Potion potion = (Potion)scene._inventoryView[inventoryPos];
+                        potion.Use(player, potion.heal);
+                        scene.DisplayHealthBar();
+                        player.Inventory.Remove(scene._inventoryView[inventoryPos]);
+                        break;
+                    case 1:
+                        scene.DisplayText(2, 27, 13, 100, 8, 5, item.Name, item.Description);
+                        break;
+                    case 2:
+                        item.Location[0] = player.Location[0] + player.Height - 5;
+                        item.Location[1] = player.Location[1];
+                        map.Universe[stage].Objects.Add(item);
+                        player.Inventory.Remove(scene._inventoryView[inventoryPos]);
+                        item.PrintObject(scene);
+                        scene.DisplayObjectsScene(stage);
+                        break;
+                    case 3:
+                        player.Inventory.Remove(scene._inventoryView[inventoryPos]);
+                        break;
+                    default:
+                        break;
+                }
+                scene.DisplayInventory(2, 27, 20, 50, 8, 5, "Inventory");
             }
             if (KeyDown(Key.Up) && inventoryPos > 0)
                 inventoryPos--;
@@ -142,28 +193,43 @@ namespace TBQuestGame
                 player.PlayerDisplayed = false;
                 scene.DisplayAreaLayer(2, 27, 20, 50);
                 Thread.Sleep(50);
-                //scene.DisplayBackground();
             }
+        }
+
+        public void LoadStage(int stageSelect)
+        {
+            stage = stageSelect;
+            scene.EraseLayers();
+            scene.ConsoleWriteImage(stage);
+            scene.DisplayBackground();
+            scene.DisplayObjectsScene(stage);
+            player.PrintObject(scene);
+            scene.DisplayPlayerInfo();
+            scene.DisplayHealthBar();
         }
 
         void SearchPlayerArea()
         {
-            //for (int row = player.Location[0]; row < player.Height + player.Location[0] - 1; row++)
-            //    for (int column = player.Location[1] + 4; column < player.Width + player.Location[1]; column++)
-            //        if (scene._scene[column, row, 3] != '\0')
-            //        {
-            //            scene.DisplayText(2, 27, 10, 100, 8, 5, "\tITEM GET", "ITEM GOT!");
-            //            return;
-            //        }
             foreach (Object item in map.Universe[stage].Objects)
             {
                 if (item.Location[0] <= player.Height + player.Location[0] && item.Location[0] + item.Height >= player.Location[0]
                    && item.Location[1] <= player.Width + player.Location[1] && item.Location[1] + item.Width >= player.Location[1] + 4)
                 {
-                    scene.DisplayText(2, 27, 10, 100, 8, 5, "ITEM GET", "You got " + ( item.Name != "" ? item.Name : "ITEM GOT" ) + "!");
-                    player.Inventory.Add(item);
-                    map.Universe[stage].Objects.Remove(item);
-                    break;
+                    if (item is Lootable)
+                    {
+                        scene.DisplayText(2, 27, 10, 100, 8, 5, "ITEM GET", "You got " + (item.Name != "" ? item.Name : "ITEM GOT") + "!");
+                        player.Inventory.Add(item);
+                        scene.EraseObjectSceneLayer(stage, item);
+                        scene.DisplayObjectSceneLayer(stage, item, ConsoleView.bkgLayer);
+                        map.Universe[stage].Objects.Remove(item);
+                        break;
+                    }
+                    if( item is Door )
+                    {
+                        Door door = item as Door;
+                        door.Open(player, this, scene);
+                        break;
+                    }
                 }
             }
         }
