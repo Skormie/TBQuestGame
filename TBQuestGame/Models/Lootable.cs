@@ -8,13 +8,32 @@ namespace TBQuestGame
 {
     abstract class Lootable : Object
     {
-        public string Description { get; set; }
-        public bool CanDrop { get; set; }
-        public int SellPrice { get; set; }
-        public int BuyPrice { get; set; }
-        public int EffectInt { get; set; }
+        public ItemMethod Use = Delegates.EmptyEffect;
 
-        public virtual void Use() { }
+        private int[] effectints = new int[] { 0 };
+
+        private int layer = ConsoleView.itmLayer;
+
+        public int SellPrice { get; set; }
+
+        public int BuyPrice { get; set; }
+
+        public abstract bool CanDrop { get; set; }
+
+        public abstract bool CanDestroy { get; set; }
+
+        public override int Layer
+        {
+            get { return layer; }
+            set { layer = value; }
+        }
+
+        public int[] EffectInts
+        {
+            get { return effectints; }
+            set { effectints = value; }
+        }
+
 
         void Look()
         {

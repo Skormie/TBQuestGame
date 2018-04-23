@@ -6,7 +6,15 @@ using System.Threading.Tasks;
 
 namespace TBQuestGame
 {
-    class NPC
+    class NPC : Character
     {
+        public string Dialogue = "";
+
+        public NPC(Sprite sprite)
+        {
+            Width = sprite.Width;
+            Height = sprite.Height;
+            Sprite = sprite.Sprites;
+        }
     }
 }

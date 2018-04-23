@@ -8,16 +8,18 @@ namespace TBQuestGame
 {
     class Potion : Lootable
     {
-        public int heal;
-        public new ItemMethod Use;
+        public override bool CanDrop { get; set; }
+        public override bool CanDestroy { get; set; }
 
-        public Potion() { }
+        public Potion() { CanDrop = true; CanDestroy = true; }
 
         public Potion(Sprite sprite)
         {
             Width = sprite.Width;
             Height = sprite.Height;
             Sprite = sprite.Sprites;
+            CanDrop = true;
+            CanDestroy = true;
         }
     }
 }

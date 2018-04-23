@@ -6,17 +6,34 @@ using System.Threading.Tasks;
 
 namespace TBQuestGame
 {
-    delegate void ItemMethod(Player player, int a);
+    delegate void ItemMethod(Controller ctrl, params int[] a);
 
     public class Delegates
     {
-        public static void AddMaxHP(Player player, int b)
+        public static void EmptyEffect(Controller ctrl, params int[] b)
         {
-            player.MaxHealth += b;
+            ctrl.scene.DisplayText("Use Item:", "This item has no effect!");
         }
-        public static void AddHP(Player player, int c)
+
+        public static void AddMaxHP(Controller ctrl, params int[] c)
         {
-            player.Health += c;
+            ctrl.player.MaxHealth += c[0];
+            ctrl.RemoveInventoryItem();
+            ctrl.scene.DisplayHealthBar();
+        }
+
+        public static void AddHP(Controller ctrl, params int[] d)
+        {
+            ctrl.player.Health += d[0];
+            ctrl.RemoveInventoryItem();
+            ctrl.scene.DisplayHealthBar();
+        }
+
+        public static void AddExperience(Controller ctrl, params int[] d)
+        {
+            ctrl.player.Experience += d[0];
+            ctrl.RemoveInventoryItem();
+            ctrl.scene.DisplayPlayerInfo();
         }
     }
 }

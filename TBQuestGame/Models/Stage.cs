@@ -13,6 +13,23 @@ namespace TBQuestGame
 
         private List<Object> _objects;
 
+        private bool canPassRight;
+
+        private bool canPassLeft;
+
+        public bool CanPassLeft
+        {
+            get { return canPassLeft; }
+            set { canPassLeft = value; }
+        }
+
+        public bool CanPassRight
+        {
+            get { return canPassRight; }
+            set { canPassRight = value; }
+        }
+
+
         public List<Object> Objects
         {
             get { return _objects; }
@@ -26,6 +43,14 @@ namespace TBQuestGame
         }
 
         Stage() { }
+
+        public Stage( Stage copy )
+        {
+            _background = copy._background;
+            canPassLeft = copy.canPassLeft;
+            canPassRight = copy.canPassRight;
+            _objects = new List<Object>();
+        }
 
         public Stage( string background, List<Object> objects )
         {

@@ -8,18 +8,21 @@ namespace TBQuestGame
 {
     class ObjectKey : Lootable
     {
-        public override void Use()
-        {
-            throw new NotImplementedException();
-        }
+        public override bool CanDrop { get; set; }
 
-        public ObjectKey() {}
+        public override bool CanDestroy { get; set; }
+
+        public override int Experience { get; set; } = 100;
+
+        public ObjectKey() { CanDrop = false; CanDestroy = false; }
 
         public ObjectKey(Sprite sprite)
         {
             Width = sprite.Width;
             Height = sprite.Height;
             Sprite = sprite.Sprites;
+            CanDrop = false;
+            CanDestroy = false;
         }
     }
 }

@@ -36,9 +36,9 @@ namespace TBQuestGame
             {
                 IsLocked = false;
                 player.Inventory.Remove(DoorKey);
-                console.DisplayText(10, 50, 20, 40, 4, 8, "Object Used!", "You used " + DoorKey.Name + " to unlock " + Name + "!");
+                console.DisplayText("Object Used!", "You used " + DoorKey.Name + " to unlock " + Name + "!", 10, 50, 20, 40, 4, 8);
             } else
-                console.DisplayText(10, 50, 20, 40, 4, 8, "Door", "This " + Name + " seems to be locked!");
+                console.DisplayText("Door", "This " + Name + " seems to be locked!", 10, 50, 20, 40, 4, 8);
             return -1;
         }
     }

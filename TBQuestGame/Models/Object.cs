@@ -18,12 +18,28 @@ namespace TBQuestGame
         private int _currentFrame;
         private int _tick;
         private int _layer = ConsoleView.bkgLayer;
-        private string _name;
+        private string _name = "Unknown";
         private int[] _inventoryLoc = new int[2];
         private List<string> _sprites;
+        private ConsoleColor _color = ConsoleColor.DarkGray;
+        private string description = "Nothing is known about this item.";
         #endregion
 
         #region Properties
+
+        public virtual int Experience { get; set; } = 10;
+
+        public string Description
+        {
+            get { return description; }
+            set { description = value; }
+        }
+
+        public ConsoleColor Color
+        {
+            get { return _color; }
+            set { _color = value; }
+        }
         public int[] InventoryLoc
         {
             get { return _inventoryLoc; }
@@ -42,7 +58,7 @@ namespace TBQuestGame
             set { _tick = value; }
         }
 
-        public int Layer
+        public virtual int Layer
         {
             get { return _layer; }
             set { _layer = value; }
@@ -127,6 +143,8 @@ namespace TBQuestGame
                     {
                         cv.SetMapInfo(_location[1] + k, _location[0] + i, layer, item);
                         cv.SetMapInfo(_location[1] + k + 1, _location[0] + i, layer, item);
+                        cv._color[_location[1] + k, _location[0] + i, layer, 0] = _color;
+                        cv._color[_location[1] + k + 1, _location[0] + i, layer, 0] = _color;
                     }
                     else
                     {

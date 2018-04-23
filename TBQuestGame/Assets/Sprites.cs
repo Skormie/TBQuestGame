@@ -13,6 +13,7 @@ namespace TBQuestGame
             { "torch", new Sprite
             (
                 new List<string>() {
+                    "        \n" +
                     "    █   \n" +
                     "   █ █  \n" +
                     "  █ █ █ \n" +
@@ -21,8 +22,10 @@ namespace TBQuestGame
                     "  █  █  \n" +
                     " ██████ \n" +
                     "  █  █  \n" +
-                    "   ██   \n"
+                    "   ██   \n" +
+                    "        \n"
                 ,
+                    "        \n" +
                     "   █    \n" +
                     "  █ █   \n" +
                     " █ █ █  \n" +
@@ -31,7 +34,8 @@ namespace TBQuestGame
                     "  █  █  \n" +
                     " ██████ \n" +
                     "  █  █  \n" +
-                    "   ██   \n"
+                    "   ██   \n" +
+                    "        \n"
                 }
             )
             },
@@ -126,6 +130,85 @@ namespace TBQuestGame
                     " ██     \n" +
                     " █ ████ \n" +
                     " ██ █ █ \n"
+                }
+            )
+            },
+            { "man", new Sprite
+            (
+                new List<string>()
+                {
+                    "      \n" +
+                    "  ███ \n" +
+                    "  ███ \n" +
+                    "  ██  \n" +
+                    "      \n" +
+                    "  ███ \n" +
+                    "  ███ \n" +
+                    "  █ █ \n" +
+                    " ██ █ \n"
+                }
+            )
+            },
+            { "woman", new Sprite
+            (
+                new List<string>()
+                {
+                    "       \n" +
+                    "  ███  \n" +
+                    "  ███  \n" +
+                    "  ███  \n" +
+                    "    ██ \n" +
+                    " ███   \n" +
+                    "  ██   \n" +
+                    "  ███  \n" +
+                    "  ███  \n"
+                }
+            )
+            },
+            { "farmer1", new Sprite
+            (
+                new List<string>()
+                {
+                    "        \n" +
+                    "   ███  \n" +
+                    " █████  \n" +
+                    "   ████ \n" +
+                    "  ███   \n" +
+                    "  ██ █  \n" +
+                    "    ██  \n" +
+                    "   █  █ \n" +
+                    "  ██ ██ \n"
+                }
+            )
+            },
+            { "farmer2", new Sprite
+            (
+                new List<string>()
+                {
+                    " █ █      \n" +
+                    " █ █ ███  \n" +
+                    "  ██████  \n" +
+                    "  █  ████ \n" +
+                    "  █ ███   \n" +
+                    "  █ ██ █  \n" +
+                    "  █   ██  \n" +
+                    "  █  █  █ \n" +
+                    "  █ ██ ██ \n"
+                }
+            )
+            },
+            { "docter", new Sprite
+            (
+                new List<string>()
+                {
+                    "        \n" +
+                    "   ███  \n" +
+                    "   ███  \n" +
+                    " ████   \n" +
+                    "     ██ \n" +
+                    "    ███ \n" +
+                    "    ███ \n" +
+                    "    ███ \n"
                 }
             )
             }

@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Drawing;
 using System.Windows.Input;
+using System.Runtime.InteropServices;
 
 namespace TBQuestGame
 {
@@ -22,8 +23,8 @@ namespace TBQuestGame
         static public int _windowHeight = 45;
         static public int _layerDepth = 5;
         public char[,,] _scene = new char[_windowWidth, _windowHeight, _layerDepth];
+        public ConsoleColor[,,,] _color =  new ConsoleColor[_windowWidth, _windowHeight, _layerDepth, 2];
         public Player _player;
-        public Map _map;
         public Dictionary<int, Object> _inventoryView = new Dictionary<int, Object>();
         public int lastPos;
         public const int bkgLayer = 3;
@@ -32,18 +33,16 @@ namespace TBQuestGame
 
         #region Constructors
 
-        public ConsoleView( Player player, Map map )
+        public ConsoleView( Player player )
         {
             _player = player;
-            _map = map;
         }
 
         #endregion
 
         #region Menuing And Text
-        public void DisplayText(int row, int column, int y_size, int x_size, int horizontal_padding, int vertical_padding, string title, string text)
+        public void DisplayText(string title, string text, int row = 2, int column = 27, int y_size = 13, int x_size = 100, int horizontal_padding = 8, int vertical_padding = 5)
         {
-            text = text != null ? text : "Nothing is known about this item.";
             string width = "";
             for (int j = 0; j < x_size; j++) width += " ";
             int size = width.Count() - horizontal_padding * 2;
@@ -94,11 +93,13 @@ namespace TBQuestGame
 
 
             DisplayAreaLayer(row, column, y_size, x_size);
+            DisplayObjectsScene();
             _player.PlayerDisplayed = false;
         }
 
         public void DisplayInventory(int row, int column, int y_size, int x_size, int horizontal_padding, int vertical_padding, string title)
         {
+            _inventoryView.Clear();
             ClearInputBuffer();
             string width = "";
             for (int j = 0; j < x_size; j++) width += " ";
@@ -128,7 +129,6 @@ namespace TBQuestGame
                     }
                     Console.SetCursorPosition(column + 5, row + 2);
                     Console.Write(title + ": ");
-                    //rowr = row + vertical_padding;
                     i = 0;
                     Console.SetCursorPosition(column + horizontal_padding, row + vertical_padding + (i * 2));
                 }
@@ -138,8 +138,8 @@ namespace TBQuestGame
                 item.InventoryLoc[1] = row + vertical_padding + (i * 2);
                 i++;
             }
-            Console.SetCursorPosition((column + x_size) - 10, rowc - vertical_padding + 2);
-            Console.Write("[close]");
+            Console.SetCursorPosition((column + x_size) - 20, rowc - vertical_padding + 2);
+            Console.Write("[press I to close]");
             _player.CurserPos[0] = column + horizontal_padding;
             _player.CurserPos[1] = row + vertical_padding;
         }
@@ -188,7 +188,6 @@ namespace TBQuestGame
             Console.Write("[close]");
             int menuPos = 0;
             int previousPos = 0;
-            bool initMenu = false;
             while (!Controller.KeyPressed(Key.Enter))
             {
                 if (Controller.KeyDown(Key.Up) && menuPos > 0)
@@ -203,7 +202,6 @@ namespace TBQuestGame
                 }
                 DisplayMenuCursor(menuPos, cursorPos, previousPos);
                 previousPos = menuPos;
-                initMenu = true;
             }
             DisplayAreaLayer(row, column, y_size, x_size);
             return menuPos;
@@ -288,7 +286,7 @@ namespace TBQuestGame
                     column += 1;
                     y -= 1;
                     x -= 2;
-                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = _player.Color;
                 }
                 if (layer == bkgLayer)
                     Console.ForegroundColor = ConsoleColor.DarkGray;
@@ -299,9 +297,8 @@ namespace TBQuestGame
                         Console.SetCursorPosition(column, rowc);
                         string temp = "";
                         for (int columnc = column; columnc < column + x; columnc++)
-                        {
                             temp += _scene[columnc, rowc, layer];
-                        }
+
                         int test = temp.Trim('\0', ' ').Length;
                         if (test > 0 || layer == 0)
                             Console.Write(temp);
@@ -310,13 +307,19 @@ namespace TBQuestGame
                     {
                         if (_scene[column, rowc, layer] != '\0')
                         {
+                            if (layer == itmLayer)
+                                Console.ForegroundColor = _color[column, rowc, layer, 0];
                             Console.SetCursorPosition(column, rowc);
                             Console.Write(_scene[column, rowc, layer]);
+                            //Console.BackgroundColor = _color[column, rowc, layer, 1];
                         }
                         if (column + x < _windowWidth && _scene[column + x, rowc, layer] != '\0')
                         {
+                            if (layer == itmLayer)
+                                Console.ForegroundColor = _color[column + x, rowc, layer, 0];
                             Console.SetCursorPosition(column + x, rowc);
                             Console.Write(_scene[column + x, rowc, layer]);
+                            //Console.BackgroundColor = _color[column, rowc, layer, 1];
                         }
                     }
                 }
@@ -341,12 +344,25 @@ namespace TBQuestGame
         public void DisplayBackground()
         {
             Console.Clear();
+            if (Console.BufferWidth < _scene.GetLength(0))
+            {
+                Console.WriteLine("It looks like your console window is too small to play the game at the font size you're currently using.");
+                Console.WriteLine();
+                Console.WriteLine("Please right-click the icon in the top left corner of this window.");
+                Console.WriteLine("Then click on properties and decrease the fontsize (I recommend 12) and relaunch this application.");
+                Console.WriteLine("[Press any key to exit]");
+                Console.ReadKey();
+                System.Environment.Exit(1);
+            }
+
             Console.ForegroundColor = ConsoleColor.DarkGray;
             for (int row = 0; row < _scene.GetLength(1) - 1; row++)
             {
                 for (int column = 0; column < _scene.GetLength(0) - 1; column++)
                 {
-                    Console.SetCursorPosition(column, row);
+                    //Console.ForegroundColor = _color[column, row, bkgLayer, 0];
+                    //Console.BackgroundColor = _color[column, row, bkgLayer, 1];
+                    Console.SetCursorPosition(column, row); // Has problems displaying the background when window is too big.
                     if (_scene[column, row, bkgLayer] != '\0' && _scene[column, row, bkgLayer] != ' ')
                         Console.Write(_scene[column, row, bkgLayer]);
                     else
@@ -356,31 +372,16 @@ namespace TBQuestGame
             Console.ForegroundColor = ConsoleColor.Gray;
         }
 
-        public void DisplayObjects()
+        public void DisplayObjectsScene()
         {
+            int stage = _player.Stage;
             Console.ForegroundColor = ConsoleColor.DarkGray;
-            for (int row = 0; row < _scene.GetLength(1) - 1; row++)
-            {
-                for (int column = 0; column < _scene.GetLength(0) - 1; column++)
-                {
-                    if (_scene[column, row, itmLayer] != '\0')
-                    {
-                        Console.SetCursorPosition(column, row);
-                        Console.Write(_scene[column, row, itmLayer]);
-                    }
-                }
-            }
-            Console.ForegroundColor = ConsoleColor.Gray;
-        }
-
-        public void DisplayObjectsScene(int stage)
-        {
-            Console.ForegroundColor = ConsoleColor.DarkGray;
-            foreach (Object item in _map.Universe[stage].Objects)
+            foreach (Object item in Area.maps[_player.Stage][_player.StageDepth].Objects)
                 for (int row = item.Location[0]; row < item.Location[0] + item.Height; row++)
                 {
                     for (int column = item.Location[1] + 2; column < item.Location[1] + item.Width + 2; column++)
                     {
+                        Console.ForegroundColor = item.Color;
                         Console.SetCursorPosition(column, row);
                         Console.Write(_scene[column, row, item.Layer]);
                     }
@@ -388,13 +389,15 @@ namespace TBQuestGame
             Console.ForegroundColor = ConsoleColor.Gray;
         }
 
-        public void DisplayObjectSceneLayer(int stage, Object item, int layer)
+        public void DisplayObjectSceneLayer(Object item, int layer)
         {
             Console.ForegroundColor = ConsoleColor.DarkGray;
             for (int row = item.Location[0]; row < item.Location[0] + item.Height; row++)
             {
                 for (int column = item.Location[1] + 2; column < item.Location[1] + item.Width + 2; column++)
                 {
+                    if(layer == item.Layer)
+                        Console.ForegroundColor = item.Color;
                     Console.SetCursorPosition(column, row);
                     Console.Write(_scene[column, row, layer]);
                 }
@@ -419,9 +422,10 @@ namespace TBQuestGame
         public void EraseLayers()
         {
             Array.Clear(_scene, 0, _scene.Length);
+            Array.Clear(_color, 0, _color.Length);
         }
 
-        public void EraseObjectSceneLayer(int stage, Object item)
+        public void EraseObjectSceneLayer(Object item)
         {
             for (int row = item.Location[0]; row < item.Location[0] + item.Height; row++)
                 for (int column = item.Location[1] + 2; column < item.Location[1] + item.Width + 2; column++)
@@ -469,19 +473,34 @@ namespace TBQuestGame
             }
             else
             {
+                //_color[j, i, bkgLayer, 1] = (ConsoleColor)bestHit[0];
+                //_color[j + 1, i, bkgLayer, 1] = (ConsoleColor)bestHit[0];
+                //_color[j, i, bkgLayer, 0] = (ConsoleColor)bestHit[1];
+                //_color[j + 1, i, bkgLayer, 0] = (ConsoleColor)bestHit[1];
                 SetMapInfo(j, i, bkgLayer, rList[bestHit[2] - 1]);
                 SetMapInfo(j + 1, i, bkgLayer, rList[bestHit[2] - 1]);
             }
         }
 
-        public void ConsoleWriteImage(int stage)
+        public void ConsoleWriteImage()
         {
-            Bitmap source = new Bitmap(@System.IO.Directory.GetCurrentDirectory() + _map.Universe[stage].Background, true);
+            Bitmap source = new Bitmap(@System.IO.Directory.GetCurrentDirectory() + Area.maps[_player.Stage][_player.StageDepth].Background, true);
             for (int i = 0; i < source.Height; i++)
                 for (int j = 0; j < source.Width; j++)
                     ConsoleWritePixel(source.GetPixel(j, i), j*2, i);
             Console.ResetColor();
-            foreach (Object item in _map.Universe[stage].Objects)
+            foreach (Object item in Area.maps[_player.Stage][_player.StageDepth].Objects)
+                item.PrintObject(this);
+        }
+
+        public void ConsoleWriteImage( Stage Map )
+        {
+            Bitmap source = new Bitmap(@System.IO.Directory.GetCurrentDirectory() + Map.Background, true);
+            for (int i = 0; i < source.Height; i++)
+                for (int j = 0; j < source.Width; j++)
+                    ConsoleWritePixel(source.GetPixel(j, i), j * 2, i);
+            Console.ResetColor();
+            foreach (Object item in Map.Objects)
                 item.PrintObject(this);
         }
         #endregion
@@ -505,8 +524,10 @@ namespace TBQuestGame
 
         public void SetupConsoleDisplay()
         {
+            Console.SetWindowPosition(0, 0);
             try
             {
+                //Console.BufferWidth = _windowWidth + 10;
                 Console.SetWindowSize(_windowWidth, _windowHeight);
             }
             catch (System.ArgumentOutOfRangeException e)
@@ -590,6 +611,26 @@ namespace TBQuestGame
         //    }
         //    foreach (Object item in _map.Universe[stage].Objects)
         //        item.PrintObject(this);
+        //}
+
+        // Old Method
+        //public void DisplayObjects()
+        //{
+        //    Console.ForegroundColor = ConsoleColor.DarkGray;
+        //    for (int row = 0; row < _scene.GetLength(1) - 1; row++)
+        //    {
+        //        for (int column = 0; column < _scene.GetLength(0) - 1; column++)
+        //        {
+        //            if (_scene[column, row, itmLayer] != '\0')
+        //            {
+        //                //Console.ForegroundColor = _color[column, row, itmLayer, 0];
+        //                //Console.BackgroundColor = _color[column, row, itmLayer, 1];
+        //                Console.SetCursorPosition(column, row);
+        //                Console.Write(_scene[column, row, itmLayer]);
+        //            }
+        //        }
+        //    }
+        //    Console.ForegroundColor = ConsoleColor.Gray;
         //}
         #endregion
     }

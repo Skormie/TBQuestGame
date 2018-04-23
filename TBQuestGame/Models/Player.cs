@@ -7,20 +7,19 @@ using System.Threading;
 
 namespace TBQuestGame
 {
-    public class Player : Object
+    public class Player : Character
     {
         private bool _playerDisplayed;
         private List<Object> _inventory;
         private bool _inventoryInit;
-        private bool _itemInit;
         private int[] _curserPos = new int[2];
         private int _inventoryOffset;
-        public int Gold { get; set; }
-        public double Health { get; set; }
-        public double MaxHealth { get; set; }
-        public int Experience { get; set; }
-        public int NextExperience { get; set; }
-        public int Level { get; set; }
+
+        public override int Experience { get; set; } = 0;
+
+        public int Stage { get; set; }
+
+        public int StageDepth { get; set; }
 
         public int InventoryOffset
         {
@@ -28,18 +27,10 @@ namespace TBQuestGame
             set { _inventoryOffset = value; }
         }
 
-
         public int[] CurserPos
         {
             get { return _curserPos; }
             set { _curserPos = value; }
-        }
-
-
-        public bool ItemInit
-        {
-            get { return _itemInit; }
-            set { _itemInit = value; }
         }
 
         public bool InventoryInit
@@ -54,7 +45,8 @@ namespace TBQuestGame
             set { _inventory = value; }
         }
 
-
+        // Sprites for the player.
+        #region Player Sprites
         private List<List<string>> _sprites = new List<List<string>>()
         {
             new List<string>()
@@ -141,6 +133,7 @@ namespace TBQuestGame
                 "\0  █   ██  \n"
             }
         };
+        #endregion
 
         public bool PlayerDisplayed
         {
