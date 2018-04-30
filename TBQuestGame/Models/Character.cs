@@ -13,5 +13,8 @@ namespace TBQuestGame
         public double MaxHealth { get; set; }
         public int NextExperience { get; set; } = 10;
         public int Level { get; set; }
+        public int Attack { get; set; }
+        public int Defence { get; set; }
+        public int Damage { get; set; }
     }
 }

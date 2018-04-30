@@ -15,6 +15,12 @@ namespace TBQuestGame
         private int[] _curserPos = new int[2];
         private int _inventoryOffset;
 
+        public bool Turn { get; set; } = true;
+        public bool battleInit { get; set; } = false;
+        public int[] BattleMapXYZ { get; set; } = new int[4];
+
+        public int[] LastMapXYZ { get; set; } = new int[4];
+
         public override int Experience { get; set; } = 0;
 
         public int Stage { get; set; }
@@ -42,14 +48,18 @@ namespace TBQuestGame
         public List<Object> Inventory
         {
             get { return _inventory; }
-            set { _inventory = value; }
+            set
+            {
+                OnObjectAddedToInventory();
+                _inventory = value;
+            }
         }
 
         // Sprites for the player.
         #region Player Sprites
         private List<List<string>> _sprites = new List<List<string>>()
         {
-            new List<string>()
+            new List<string>() //0
             {
                 "\0          \n" + //Idle Right
                 "\0   ███    \n" +
@@ -60,7 +70,7 @@ namespace TBQuestGame
                 "\0  █  █    \n" +
                 "\0 ██  ██   \n"
             },
-            new List<string>()
+            new List<string>() //1
             {
                 "\0          \n" + // Walk Right Startup Frame 1
                 "\0   ███    \n" +
@@ -87,7 +97,7 @@ namespace TBQuestGame
                 "\0  ██  █   \n" +
                 "\0  █   ██  \n"
             },
-            new List<string>()
+            new List<string>() //2
             {
                 "\0          \n" + // Walk Right Frame 3
                 "\0   ███ █  \n" +
@@ -122,7 +132,8 @@ namespace TBQuestGame
                 "\0   ██     \n" +
                 "\0   ███    \n"
             },
-            new List<string>() {
+            new List<string>() //3
+            {
                 "\0          \n" + // Jumping Animation
                 "\0   ███  █ \n" +
                 "\0 ██ ██  █ \n" +
@@ -131,6 +142,23 @@ namespace TBQuestGame
                 "\0   ██     \n" +
                 "\0  ██  █   \n" +
                 "\0  █   ██  \n"
+            },
+            new List<string>() // Left Animations. 4
+            {
+                Image.ConsoleReadImage(@"\TBQuestGFX\Sprites\HeroLeft\hero.png", true)
+            },
+            new List<string>() // 5
+            {
+                Image.ConsoleReadImage(@"\TBQuestGFX\Sprites\HeroLeft\heroR1.png", true),
+                Image.ConsoleReadImage(@"\TBQuestGFX\Sprites\HeroLeft\heroR2.png", true),
+                Image.ConsoleReadImage(@"\TBQuestGFX\Sprites\HeroLeft\heroR2.png", true)
+            },
+            new List<string>() // 6
+            {
+                Image.ConsoleReadImage(@"\TBQuestGFX\Sprites\HeroLeft\heroR3.png", true),
+                Image.ConsoleReadImage(@"\TBQuestGFX\Sprites\HeroLeft\heroR4.png", true),
+                Image.ConsoleReadImage(@"\TBQuestGFX\Sprites\HeroLeft\heroR5.png", true),
+                Image.ConsoleReadImage(@"\TBQuestGFX\Sprites\HeroLeft\heroR4.png", true)
             }
         };
         #endregion
@@ -156,6 +184,8 @@ namespace TBQuestGame
                 CurrentFrame = ++CurrentFrame % _sprites[Animation].Count();
                 if(Animation == 1 && CurrentFrame == 2)
                     Animation = 2;
+                else if(Animation == 5 && CurrentFrame == 2)
+                    Animation = 6;
             }
             foreach (char item in _sprites[Animation][CurrentFrame])
             {

@@ -32,6 +32,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="NAudio, Version=1.8.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NAudio.1.8.4\lib\net35\NAudio.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -46,20 +49,28 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Delegates.cs" />
+    <Compile Include="Assets\Image.cs" />
+    <Compile Include="Assets\Monsters.cs" />
     <Compile Include="Assets\Sprites.cs" />
+    <Compile Include="Assets\NAudio.cs" />
     <Compile Include="Models\Character.cs" />
     <Compile Include="Controllers\Controller.cs" />
+    <Compile Include="Models\Civilian.cs" />
     <Compile Include="Models\Door.cs" />
+    <Compile Include="Models\Enemy.cs" />
+    <Compile Include="Models\ISpeak.cs" />
     <Compile Include="Models\Lootables\Key.cs" />
     <Compile Include="Models\Lootable.cs" />
     <Compile Include="Models\Area.cs" />
     <Compile Include="Models\Lootables\Misc.cs" />
+    <Compile Include="Models\MobSpawn.cs" />
     <Compile Include="Models\NPC.cs" />
     <Compile Include="Models\Lootables\Potion.cs" />
     <Compile Include="Models\Sprite.cs" />
     <Compile Include="Models\Stage.cs" />
     <Compile Include="Models\Object.cs" />
     <Compile Include="Assets\Universe.cs" />
+    <Compile Include="Models\Warp.cs" />
     <Compile Include="Views\ConsoleView.cs" />
     <Compile Include="Models\Player.cs" />
     <Compile Include="Program.cs" />
@@ -67,7 +78,27 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <COMReference Include="stdole">
+      <Guid>{00020430-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>2</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+    <COMReference Include="WMPLib">
+      <Guid>{6BF52A50-394A-11D3-B153-00C04F79FAA6}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

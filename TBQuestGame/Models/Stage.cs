@@ -17,6 +17,20 @@ namespace TBQuestGame
 
         private bool canPassLeft;
 
+        public string Music { get; set; }
+
+        public List<MobSpawn> Spawns { get; set; } = new List<MobSpawn>();
+
+        public Warp MapWarpRight { get; set; }
+
+        public Warp MapWarpLeft { get; set; }
+
+        public int MapBoundsRight { get; set; } = ConsoleView._windowWidth - 25;
+
+        public int MapBoundsLeft { get; set; } = 0;
+
+        public bool Indoors { get; set; } = false;
+
         public bool CanPassLeft
         {
             get { return canPassLeft; }
@@ -28,7 +42,6 @@ namespace TBQuestGame
             get { return canPassRight; }
             set { canPassRight = value; }
         }
-
 
         public List<Object> Objects
         {
@@ -44,18 +57,19 @@ namespace TBQuestGame
 
         Stage() { }
 
-        public Stage( Stage copy )
+        public Stage( Stage copy, bool copyObjects = true )
         {
             _background = copy._background;
             canPassLeft = copy.canPassLeft;
             canPassRight = copy.canPassRight;
-            _objects = new List<Object>();
+            _objects = copyObjects ? new List<Object>( copy.Objects ) : new List<Object>();
+            Spawns = copy.Spawns;
         }
 
-        public Stage( string background, List<Object> objects )
+        public Stage( string background, List<Object> objects = null )
         {
             _background = background;
-            _objects = objects;
+            _objects = objects == null ? new List<Object>() : objects;
         }
 
     }

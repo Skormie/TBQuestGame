@@ -11,9 +11,16 @@ namespace TBQuestGame
         public List<string> Sprites { get; set; }
         public int Height { get; set; }
         public int Width { get; set; }
+        public Sprite() {}
         public Sprite(List<string> sprites)
         {
             Sprites = sprites;
+            Height = Sprites[0].Length - Sprites[0].Replace("\n", "").Length;
+            Width = Sprites[0].IndexOf('\n') * 2;
+        }
+        public Sprite(string directory)
+        {
+            Sprites = new List<string>() { Image.ConsoleReadImage(directory) };
             Height = Sprites[0].Length - Sprites[0].Replace("\n", "").Length;
             Width = Sprites[0].IndexOf('\n') * 2;
         }

@@ -19,8 +19,8 @@ namespace TBQuestGame
         // Layer 2 - Animated Objects Frame 2
         // Layer 3 - Lootable Objects
         // Layer 4 - Background
-        public static int _windowWidth = 192;
-        static public int _windowHeight = 45;
+        public const int _windowWidth = 192;
+        public const int _windowHeight = 45;
         static public int _layerDepth = 5;
         public char[,,] _scene = new char[_windowWidth, _windowHeight, _layerDepth];
         public ConsoleColor[,,,] _color =  new ConsoleColor[_windowWidth, _windowHeight, _layerDepth, 2];
@@ -188,22 +188,29 @@ namespace TBQuestGame
             Console.Write("[close]");
             int menuPos = 0;
             int previousPos = 0;
+            while (!Controller.KeyUp(Key.Enter)) { }
             while (!Controller.KeyPressed(Key.Enter))
             {
                 if (Controller.KeyDown(Key.Up) && menuPos > 0)
                 {
                     menuPos--;
+                    Controller.soundPlayer.SoundLocation = @System.IO.Directory.GetCurrentDirectory() + @"\TBQuestMusic\Menu Sounds\menuupdown.wav";
+                    Controller.soundPlayer.Play();
                     Thread.Sleep(90);
                 }
                 else if (Controller.KeyDown(Key.Down) && menuPos < option.Count())
                 {
                     menuPos++;
+                    Controller.soundPlayer.SoundLocation = @System.IO.Directory.GetCurrentDirectory() + @"\TBQuestMusic\Menu Sounds\menuupdown.wav";
+                    Controller.soundPlayer.Play();
                     Thread.Sleep(90);
                 }
                 DisplayMenuCursor(menuPos, cursorPos, previousPos);
                 previousPos = menuPos;
             }
             DisplayAreaLayer(row, column, y_size, x_size);
+            Controller.soundPlayer.SoundLocation = @System.IO.Directory.GetCurrentDirectory() + @"\TBQuestMusic\Menu Sounds\menu_cancel.wav";
+            Controller.soundPlayer.Play();
             return menuPos;
         }
 
@@ -239,11 +246,11 @@ namespace TBQuestGame
 
         #region Displaying Console View
 
-        public void DisplayHealthBar()
+        public void DisplayHealthBar(int x = 1, int y = 37)
         {
+            if (_player.battleInit)
+                y = 1;
             string[] healthBar = new string[3];
-            int x = 1;
-            int y = 37;
             int height = 3;
             Console.SetCursorPosition(x, y);
             for (int i = 0; i < _player.MaxHealth; i++)
@@ -262,10 +269,37 @@ namespace TBQuestGame
             }
         }
 
-        public void DisplayPlayerInfo()
+        public void DisplayEnemyHealthBar( double hp, double maxhp, int x = 132, int y = 1)
         {
-            int x = 1;
-            int y = 36;
+            string[] healthBar = new string[3];
+            int height = 3;
+            Console.SetCursorPosition(x, y);
+            for (int i = 0; i < maxhp; i++)
+            {
+                healthBar[0] += "▄";
+                healthBar[2] += "▀";
+                if (i == 0 || i == maxhp - 1)
+                    healthBar[1] += "█";
+                else
+                    healthBar[1] += hp > i ? "▓" : " ";
+            }
+            for (int i = 0; i < height; i++)
+            {
+                Console.SetCursorPosition(x, y + i);
+                Console.Write(healthBar[i]);
+            }
+        }
+
+        public void DisplayEnemyInfo(int level, string name, int x = 132, int y = 0)
+        {
+            Console.SetCursorPosition(x, y);
+            Console.Write("Lv:" + level.ToString().PadRight(4) + name + "'s Health:");
+        }
+
+        public void DisplayPlayerInfo(int x = 1, int y = 36)
+        {
+            if(_player.battleInit)
+                y = 0;
             int height = 3;
             Console.SetCursorPosition(x, y);
             Console.Write("Lv:" + _player.Level.ToString().PadRight(4) + _player.Name+"'s Health:");
@@ -356,12 +390,10 @@ namespace TBQuestGame
             }
 
             Console.ForegroundColor = ConsoleColor.DarkGray;
-            for (int row = 0; row < _scene.GetLength(1) - 1; row++)
+            for (int row = 0; row < _scene.GetLength(1) -1; row++)
             {
-                for (int column = 0; column < _scene.GetLength(0) - 1; column++)
+                for (int column = 0; column < _scene.GetLength(0); column++)
                 {
-                    //Console.ForegroundColor = _color[column, row, bkgLayer, 0];
-                    //Console.BackgroundColor = _color[column, row, bkgLayer, 1];
                     Console.SetCursorPosition(column, row); // Has problems displaying the background when window is too big.
                     if (_scene[column, row, bkgLayer] != '\0' && _scene[column, row, bkgLayer] != ' ')
                         Console.Write(_scene[column, row, bkgLayer]);
@@ -374,7 +406,6 @@ namespace TBQuestGame
 
         public void DisplayObjectsScene()
         {
-            int stage = _player.Stage;
             Console.ForegroundColor = ConsoleColor.DarkGray;
             foreach (Object item in Area.maps[_player.Stage][_player.StageDepth].Objects)
                 for (int row = item.Location[0]; row < item.Location[0] + item.Height; row++)
@@ -389,14 +420,14 @@ namespace TBQuestGame
             Console.ForegroundColor = ConsoleColor.Gray;
         }
 
-        public void DisplayObjectSceneLayer(Object item, int layer)
+        public void DisplayObjectSceneLayer(Object item, int layer, bool color = true)
         {
             Console.ForegroundColor = ConsoleColor.DarkGray;
             for (int row = item.Location[0]; row < item.Location[0] + item.Height; row++)
             {
                 for (int column = item.Location[1] + 2; column < item.Location[1] + item.Width + 2; column++)
                 {
-                    if(layer == item.Layer)
+                    if(layer == item.Layer && color)
                         Console.ForegroundColor = item.Color;
                     Console.SetCursorPosition(column, row);
                     Console.Write(_scene[column, row, layer]);
@@ -473,10 +504,6 @@ namespace TBQuestGame
             }
             else
             {
-                //_color[j, i, bkgLayer, 1] = (ConsoleColor)bestHit[0];
-                //_color[j + 1, i, bkgLayer, 1] = (ConsoleColor)bestHit[0];
-                //_color[j, i, bkgLayer, 0] = (ConsoleColor)bestHit[1];
-                //_color[j + 1, i, bkgLayer, 0] = (ConsoleColor)bestHit[1];
                 SetMapInfo(j, i, bkgLayer, rList[bestHit[2] - 1]);
                 SetMapInfo(j + 1, i, bkgLayer, rList[bestHit[2] - 1]);
             }
@@ -484,13 +511,16 @@ namespace TBQuestGame
 
         public void ConsoleWriteImage()
         {
-            Bitmap source = new Bitmap(@System.IO.Directory.GetCurrentDirectory() + Area.maps[_player.Stage][_player.StageDepth].Background, true);
-            for (int i = 0; i < source.Height; i++)
-                for (int j = 0; j < source.Width; j++)
-                    ConsoleWritePixel(source.GetPixel(j, i), j*2, i);
-            Console.ResetColor();
-            foreach (Object item in Area.maps[_player.Stage][_player.StageDepth].Objects)
-                item.PrintObject(this);
+            if(Area.maps != null)
+            {
+                Bitmap source = new Bitmap(@System.IO.Directory.GetCurrentDirectory() + Area.maps[_player.Stage][_player.StageDepth].Background, true);
+                for (int i = 0; i < source.Height; i++)
+                    for (int j = 0; j < source.Width; j++)
+                        ConsoleWritePixel(source.GetPixel(j, i), j * 2, i);
+                Console.ResetColor();
+                foreach (Object item in Area.maps[_player.Stage][_player.StageDepth].Objects)
+                    item.PrintObject(this);
+            }
         }
 
         public void ConsoleWriteImage( Stage Map )
@@ -533,7 +563,7 @@ namespace TBQuestGame
             catch (System.ArgumentOutOfRangeException e)
             {
                 if (e.ParamName == "width")
-                    _windowWidth = Console.LargestWindowWidth;
+                    //_windowWidth = Console.LargestWindowWidth;
                 try
                 {
                     Console.SetWindowSize(_windowWidth, _windowHeight);
@@ -541,7 +571,7 @@ namespace TBQuestGame
                 catch (System.ArgumentOutOfRangeException b)
                 {
                     if (b.ParamName == "height")
-                        _windowHeight = Console.LargestWindowHeight;
+                        //_windowHeight = Console.LargestWindowHeight;
                     Console.SetWindowSize(_windowWidth, _windowHeight);
                 }
             }

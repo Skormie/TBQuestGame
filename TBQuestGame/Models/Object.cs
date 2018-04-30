@@ -115,6 +115,16 @@ namespace TBQuestGame
 
         #endregion
 
+        public event EventHandler ObjectAddedToInventory;
+
+        public void OnObjectAddedToInventory()
+        {
+            if (ObjectAddedToInventory != null)
+            {
+                ObjectAddedToInventory(this, EventArgs.Empty);
+            }
+        }
+
         public Object() { }
 
         public Object(Sprite sprite)

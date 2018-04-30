@@ -10,7 +10,7 @@ namespace TBQuestGame
     {
         public ItemMethod Use = Delegates.EmptyEffect;
 
-        private int[] effectints = new int[] { 0 };
+        private string[] effectStrings = new string[] { "0" };
 
         private int layer = ConsoleView.itmLayer;
 
@@ -28,12 +28,11 @@ namespace TBQuestGame
             set { layer = value; }
         }
 
-        public int[] EffectInts
+        public string[] EffectStrings
         {
-            get { return effectints; }
-            set { effectints = value; }
+            get { return effectStrings; }
+            set { effectStrings = value; }
         }
-
 
         void Look()
         {

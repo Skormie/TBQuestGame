@@ -6,32 +6,40 @@ using System.Threading.Tasks;
 
 namespace TBQuestGame
 {
-    delegate void ItemMethod(Controller ctrl, params int[] a);
+    delegate void ItemMethod(Controller ctrl, params string[] a);
 
     public class Delegates
     {
-        public static void EmptyEffect(Controller ctrl, params int[] b)
+        public static void EmptyEffect(Controller ctrl, params string[] b)
         {
             ctrl.scene.DisplayText("Use Item:", "This item has no effect!");
         }
 
-        public static void AddMaxHP(Controller ctrl, params int[] c)
+        public static void DisplayText(Controller ctrl, params string[] c)
         {
-            ctrl.player.MaxHealth += c[0];
+            ctrl.scene.DisplayText(c[0], c[1]);
+        }
+
+        public static void AddMaxHP(Controller ctrl, params string[] c)
+        {
+            int maxHP = int.Parse(c[0]);
+            ctrl.player.MaxHealth += maxHP;
             ctrl.RemoveInventoryItem();
             ctrl.scene.DisplayHealthBar();
         }
 
-        public static void AddHP(Controller ctrl, params int[] d)
+        public static void AddHP(Controller ctrl, params string[] d)
         {
-            ctrl.player.Health += d[0];
+            int hp = int.Parse(d[0]);
+            ctrl.player.Health += hp;
             ctrl.RemoveInventoryItem();
             ctrl.scene.DisplayHealthBar();
         }
 
-        public static void AddExperience(Controller ctrl, params int[] d)
+        public static void AddExperience(Controller ctrl, params string[] d)
         {
-            ctrl.player.Experience += d[0];
+            int exp = int.Parse(d[0]);
+            ctrl.player.Experience += exp;
             ctrl.RemoveInventoryItem();
             ctrl.scene.DisplayPlayerInfo();
         }
