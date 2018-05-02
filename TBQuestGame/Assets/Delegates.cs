@@ -28,6 +28,21 @@ namespace TBQuestGame
             ctrl.scene.DisplayHealthBar();
         }
 
+        public static void AddSpeed(Controller ctrl, params string[] c)
+        {
+            int speed = int.Parse(c[0]);
+            ctrl.player.Speed = speed;
+            ctrl.RemoveInventoryItem();
+        }
+
+        public static void AddAtk(Controller ctrl, params string[] c)
+        {
+            int atk = int.Parse(c[0]);
+            ctrl.player.Attack += atk;
+            ctrl.RemoveInventoryItem();
+            ctrl.scene.DisplayHealthBar();
+        }
+
         public static void AddHP(Controller ctrl, params string[] d)
         {
             int hp = int.Parse(d[0]);

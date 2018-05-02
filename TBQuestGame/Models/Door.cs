@@ -57,7 +57,7 @@ namespace TBQuestGame
             {
                 IsLocked = false;
                 player.Inventory.Remove(DoorKey);
-                control.scene.DisplayText("Object Used!", "You used " + DoorKey.Name + " to unlock " + Name + "!", 10, 50, 20, 40, 4, 8);
+                control.scene.DisplayText("Object Used!", "You used " + DoorKey.Name + " to unlock " + Name + "!");
                 if (DoorOpen != null)
                 {
                     Sprite = DoorOpen.Sprites;
@@ -65,7 +65,7 @@ namespace TBQuestGame
                     control.scene.DisplayObjectSceneLayer(this, Layer);
                 }
             } else
-                control.scene.DisplayText("Door", "This " + Name + " seems to be locked!", 10, 50, 20, 40, 4, 8);
+                control.scene.DisplayText("Door", "This " + Name + " seems to be locked!");
             return -1;
         }
     }

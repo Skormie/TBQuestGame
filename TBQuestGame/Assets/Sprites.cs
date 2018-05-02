@@ -145,6 +145,12 @@ namespace TBQuestGame
             {
                 "deadWoodsDoor", new Sprite(@"\TBQuestGFX\Rooms\Forest\deadwoodDoor.png")
             },
+            {
+                "castleDoorClosed", new Sprite(@"\TBQuestGFX\Rooms\Towns\castledoorshut.png")
+            },
+            {
+                "castleDoorOpen", new Sprite(@"\TBQuestGFX\Rooms\Towns\castledooropen.png")
+            },
             { "key", new Sprite
             (
                 new List<string>() {

@@ -73,7 +73,7 @@ namespace TBQuestGame
                 new Stage(Universe.caveLight),
                 Universe.caveLightDark,
                 new Stage(Universe.caveDark),
-                new Stage(Universe.caveDark),
+                new Stage(Universe.caveDark, Monsters.spiderboss),
                 Universe.caveDarkLight,
                 Universe.caveLightExit,
         };
@@ -101,7 +101,7 @@ namespace TBQuestGame
                 Universe.townSecondTavern,
                 Universe.townSecond,
                 Universe.townSecondForge,
-                Universe.townCastle
+                Universe.townSecondCastle
         };
 
         static public List<Stage> dungeonArea = new List<Stage>

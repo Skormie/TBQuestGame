@@ -15,8 +15,12 @@ namespace TBQuestGame
         private int[] _curserPos = new int[2];
         private int _inventoryOffset;
 
+        public int Speed { get; set; } = 7;
+
         public bool Turn { get; set; } = true;
+
         public bool battleInit { get; set; } = false;
+
         public int[] BattleMapXYZ { get; set; } = new int[4];
 
         public int[] LastMapXYZ { get; set; } = new int[4];

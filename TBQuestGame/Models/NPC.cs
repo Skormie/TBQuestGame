@@ -10,6 +10,8 @@ namespace TBQuestGame
     {
         public string Dialogue = "";
 
+        public Object Gift { get; set; }
+
         public NPC(Sprite sprite)
         {
             Width = sprite.Width;

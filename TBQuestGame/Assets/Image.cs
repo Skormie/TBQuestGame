@@ -9,6 +9,7 @@ namespace TBQuestGame
 {
     public static class Image
     {
+        //Code Modifed from "https://stackoverflow.com/questions/33538527/display-a-image-in-a-console-application" by @DieterMeemken accessed Thursday, March 29th, 2018.
         static int[] cColors = { 0x000000, 0x000080, 0x008000, 0x008080, 0x800000, 0x800080, 0x808000, 0xC0C0C0, 0x808080, 0x0000FF, 0x00FF00, 0x00FFFF, 0xFF0000, 0xFF00FF, 0xFFFF00, 0xFFFFFF };
 
         public static string ConsoleReadImage(string directory, bool player = false)

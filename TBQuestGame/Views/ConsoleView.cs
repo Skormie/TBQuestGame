@@ -93,7 +93,7 @@ namespace TBQuestGame
 
 
             DisplayAreaLayer(row, column, y_size, x_size);
-            DisplayObjectsScene();
+            //if(!_player.battleInit) DisplayObjectsScene();
             _player.PlayerDisplayed = false;
         }
 
@@ -548,8 +548,48 @@ namespace TBQuestGame
                           "\t\t\t███    ███ ███    ███ ███   ███    ▄█    ███ ███    ███ ███▌    ▄   ███    ███      ███  ▀ ███  ███    ███   ███    ███    ▄█    ███     ███     \n" +
                           "\t\t\t████████▀   ▀██████▀   ▀█   █▀   ▄████████▀   ▀██████▀  █████▄▄██   ██████████       ▀██████▀▄█ ████████▀    ██████████  ▄████████▀     ▄████▀ 64\n");
             Console.Write("\t\t\t\t\t\t\t\tProgrammed by Jason Luckhardt & Graphics by Josh Ladd.");
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine("\t\t\t\t\t\t\t\tInstructions:");
+            Console.WriteLine("\t\t\t\t\t\t\t\t\tMovement - Left and right arrow keys.");
+            Console.WriteLine("\t\t\t\t\t\t\t\t\tP or Arrow Up - Action keys.");
+            Console.WriteLine("\t\t\t\t\t\t\t\t\tI - Inventory.");
+            Console.WriteLine("\t\t\t\t\t\t\t\t\tM - Map.");
             Console.ReadKey();
             Console.Clear();
+        }
+
+        public void GameOver()
+        {
+            Console.Clear();
+            Console.SetCursorPosition(0, 15);
+            Console.Write("\t\t\t\t\t   ▄██████▄     ▄████████   ▄▄▄▄███▄▄▄▄      ▄████████       ▄█        ▄██████▄     ▄████████    ▄████████ ████████▄  \n");
+            Console.Write("\t\t\t\t\t  ███    ███   ███    ███ ▄██▀▀▀███▀▀▀██▄   ███    ███      ███       ███    ███   ███    ███   ███    ███ ███   ▀███ \n");
+            Console.Write("\t\t\t\t\t  ███    █▀    ███    ███ ███   ███   ███   ███    █▀       ███       ███    ███   ███    █▀    ███    █▀  ███    ███ \n");
+            Console.Write("\t\t\t\t\t ▄███          ███    ███ ███   ███   ███  ▄███▄▄▄          ███       ███    ███   ███         ▄███▄▄▄     ███    ███ \n");
+            Console.Write("\t\t\t\t\t▀▀███ ████▄  ▀███████████ ███   ███   ███ ▀▀███▀▀▀          ███       ███    ███ ▀███████████ ▀▀███▀▀▀     ███    ███ \n");
+            Console.Write("\t\t\t\t\t  ███    ███   ███    ███ ███   ███   ███   ███    █▄       ███       ███    ███          ███   ███    █▄  ███    ███ \n");
+            Console.Write("\t\t\t\t\t  ███    ███   ███    ███ ███   ███   ███   ███    ███      ███▌    ▄ ███    ███    ▄█    ███   ███    ███ ███   ▄███ \n");
+            Console.Write("\t\t\t\t\t  ████████▀    ███    █▀   ▀█   ███   █▀    ██████████      █████▄▄██  ▀██████▀   ▄████████▀    ██████████ ████████▀  \n");
+            Console.ReadLine();
+        }
+
+        public void GameWin()
+        {
+            Console.Clear();
+            Console.SetCursorPosition(0, 15);
+            Console.Write("\t\t\t\t\t▄██   ▄    ▄██████▄  ███    █▄          ▄████████   ▄▄▄▄███▄▄▄▄         ▄█     █▄   ▄█  ███▄▄▄▄   \n");
+            Console.Write("\t\t\t\t\t███   ██▄ ███    ███ ███    ███        ███    ███ ▄██▀▀▀███▀▀▀██▄      ███     ███ ███  ███▀▀▀██▄ \n");
+            Console.Write("\t\t\t\t\t███▄▄▄███ ███    ███ ███    ███        ███    ███ ███   ███   ███      ███     ███ ███▌ ███   ███ \n");
+            Console.Write("\t\t\t\t\t▀▀▀▀▀▀███ ███    ███ ███    ███        ███    ███ ███   ███   ███      ███     ███ ███▌ ███   ███ \n");
+            Console.Write("\t\t\t\t\t▄██   ███ ███    ███ ███    ███      ▀███████████ ███   ███   ███      ███     ███ ███▌ ███   ███ \n");
+            Console.Write("\t\t\t\t\t███   ███ ███    ███ ███    ███        ███    ███ ███   ███   ███      ███     ███ ███  ███   ███ \n");
+            Console.Write("\t\t\t\t\t███   ███ ███    ███ ███    ███        ███    ███ ███   ███   ███      ███ ▄█▄ ███ ███  ███   ███ \n");
+            Console.Write("\t\t\t\t\t ▀█████▀   ▀██████▀  ████████▀         ███    █▀   ▀█   ███   █▀        ▀███▀███▀  █▀    ▀█   █▀  \n");
+            Console.ReadLine();
         }
 
         public void SetupConsoleDisplay()

@@ -8,6 +8,9 @@ namespace TBQuestGame
 {
     public class Enemy : NPC
     {
+        public string Music { get; set; }
+
+        public bool IsBoss { get; set; } = false;
 
         public Enemy(Sprite sprite) : base(sprite)
         {

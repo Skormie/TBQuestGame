@@ -19,6 +19,8 @@ namespace TBQuestGame
 
         public string Music { get; set; }
 
+        public Enemy Boss { get; set; }
+
         public List<MobSpawn> Spawns { get; set; } = new List<MobSpawn>();
 
         public Warp MapWarpRight { get; set; }
@@ -64,6 +66,18 @@ namespace TBQuestGame
             canPassRight = copy.canPassRight;
             _objects = copyObjects ? new List<Object>( copy.Objects ) : new List<Object>();
             Spawns = copy.Spawns;
+            Music = copy.Music;
+        }
+
+        public Stage(Stage copy, Enemy boss, bool copyObjects = true)
+        {
+            _background = copy._background;
+            canPassLeft = copy.canPassLeft;
+            canPassRight = copy.canPassRight;
+            _objects = copyObjects ? new List<Object>(copy.Objects) : new List<Object>();
+            Spawns = copy.Spawns;
+            Music = copy.Music;
+            Boss = boss;
         }
 
         public Stage( string background, List<Object> objects = null )

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,17 +18,25 @@ namespace TBQuestGame
         public ConsoleView scene;
         public Enemy opponent;
         private int inventoryPos = 0;
+        public bool gameLoop = true;
 
         public static System.Media.SoundPlayer soundPlayer = new System.Media.SoundPlayer();
 
         void ProgramLoop()
         {
             int count =  0;
-            while (!Keyboard.IsKeyDown(Key.Escape))
+            while (!Keyboard.IsKeyDown(Key.Escape) && gameLoop)
             {
                 count++;
                 scene.ClearInputBuffer();
-                Thread.Sleep(7);
+                Thread.Sleep(player.Speed);
+
+                if(player.Health <= 0)
+                {
+                    NAudio.PlayFile(@"\TBQuestMusic\Standard Battle\Sad Trio.mp3");
+                    scene.GameOver();
+                    break;
+                }
 
                 if (player.InventoryInit)
                 {
@@ -40,7 +48,8 @@ namespace TBQuestGame
                 {
                     Random rng = new Random();
                     scene.DisplayHealthBar(1, 1);
-                    scene.DisplayEnemyHealthBar(opponent.Health, opponent.MaxHealth);
+                    scene.DisplayEnemyHealthBar(opponent.Health, opponent.MaxHealth, scene._scene.GetLength(0) - (int)opponent.MaxHealth - 20);
+                    scene.DisplayObjectSceneLayer(opponent, opponent.Layer);
                     if (player.Turn)
                     {
                         int input = scene.DisplayMenu(2, 50, 20, 50, 8, 5, "Attack Menu", "Attack", "Defend", "Items", "Run");
@@ -63,6 +72,7 @@ namespace TBQuestGame
                                 break;
                             case 3:
                                 player.battleInit = false;
+                                NAudio.PlayFile(@"\TBQuestMusic\Standard Battle\Run Away.mp3");
                                 scene.DisplayText("Battle Text", "You got away!", 36, 0, 8, 192, 8, 5);
                                 break;
                             default:
@@ -80,33 +90,49 @@ namespace TBQuestGame
                     }
                     if (!player.battleInit || opponent.Health <= 0 || player.Health <= 0)
                     {
+
                         scene.DisplayHealthBar(1, 1);
-                        scene.DisplayEnemyHealthBar(opponent.Health, opponent.MaxHealth);
+                        scene.DisplayEnemyHealthBar(opponent.Health, opponent.MaxHealth, scene._scene.GetLength(0) - (int)opponent.MaxHealth - 20);
                         if (opponent.Health <= 0)
                         {
                             player.Experience += opponent.Experience;
+                            player.Gold += opponent.Gold;
                             UpdatePlayerLevel();
+                            NAudio.PlayFile(@"\TBQuestMusic\Standard Battle\Champions_Are_Here.mp3");
                             scene.DisplayText("Battle Text", " Hey you won! You've earned " + opponent.Experience + " experience!", 36, 0, 8, 192, 8, 5);
+                            scene.DisplayText("Battle Text", " You've gained " + opponent.Gold + " gold!", 36, 0, 8, 192, 8, 5);
+                            if (opponent == Monsters.kingboss)
+                            {
+                                gameLoop = false;
+                                scene.GameWin();
+                            }
                         }
-                        player.Turn = true;
-                        player.battleInit = false;
-                        player.Location[1] = player.BattleMapXYZ[1];
-                        player.Location[0] = player.BattleMapXYZ[2];
-                        LoadStage();
+                        if (gameLoop)
+                        {
+                            player.Turn = true;
+                            player.battleInit = false;
+                            Area.maps[player.Stage][player.StageDepth].Boss = null;
+                            player.Location[1] = player.BattleMapXYZ[1];
+                            player.Location[0] = player.BattleMapXYZ[2];
+                            LoadStage();
+                        }
                     }
                     continue;
                 }
-
-                KeyControls();
-
-                if (count % 100 == 0)
+                if (gameLoop)
                 {
-                    foreach (Object item in Area.maps[player.Stage][player.StageDepth].Objects)
-                        if (item.Sprite.Count > 1)
-                            scene.DisplayAreaLayer(item.Location[0], item.Location[1] + 2, item.Height, item.Width, item.GetObjectFrame());
-                    player.PlayerDisplayed = false;
+                    KeyControls();
+
+                    if (count % 100 == 0)
+                    {
+                        foreach (Object item in Area.maps[player.Stage][player.StageDepth].Objects)
+                            if (item.Sprite.Count > 1)
+                                scene.DisplayAreaLayer(item.Location[0], item.Location[1] + 2, item.Height, item.Width, item.GetObjectFrame());
+                        player.PlayerDisplayed = false;
+                    }
                 }
             }
+            NAudio.KillAudio();
         }
 
         public Controller()
@@ -118,6 +144,7 @@ namespace TBQuestGame
         // Instantiating Key Game Elements.
         private void InitializeGame()
         {
+            
             //world = new Area();
             player = new Player() {
                 Name = "Hero",
@@ -156,7 +183,7 @@ namespace TBQuestGame
                 scene.DisplayInventory(2, 27, 20, 50, 8, 5, "Inventory");
             }
 
-            if (KeyDown(Key.P))
+            if (KeyDown(Key.P) || KeyDown(Key.Up))
                 SearchPlayerArea();
 
             if (KeyPressed(Key.M))
@@ -358,43 +385,66 @@ namespace TBQuestGame
         {
             player.PrintObject(scene);
             scene.DisplayArea(player.Location[0] - 1, player.Location[1] + 3, player.Height, player.Width);
-            if (Area.maps[player.Stage][player.StageDepth].Spawns.Count > 0 && !player.battleInit)
+            if (!player.battleInit)
             {
-                int chance = 0;
-                foreach (var mobSpawn in Area.maps[player.Stage][player.StageDepth].Spawns)
-                    chance += mobSpawn._chance;
-
-                int i = 0;
-                Random rng = new Random();
-                int rand = rng.Next(0, chance);
-                while ((rand -= Area.maps[player.Stage][player.StageDepth].Spawns[i]._chance) >= 0) i++;
-
-                if (Area.maps[player.Stage][player.StageDepth].Spawns[i]._mob != null)
+                if (Area.maps[player.Stage][player.StageDepth].Boss != null)
                 {
-                    //Console.Clear();
-                    //Console.WriteLine(Area.maps[player.Stage][player.StageDepth].Spawns[i]._mob.Name);
-                    //Console.ReadLine();
-                    Area.maps[player.Stage][player.StageDepth].Spawns[i]._mob.PrintObject(scene);
-                    opponent = new Enemy(Area.maps[player.Stage][player.StageDepth].Spawns[i]._mob);
-                    scene.DisplayObjectSceneLayer(opponent, opponent.Layer);
+                    Area.maps[player.Stage][player.StageDepth].Boss.PrintObject(scene);
+                    opponent = Area.maps[player.Stage][player.StageDepth].Boss;
+                    if (opponent.Music != null)
+                        NAudio.PlayFile(opponent.Music);
                     player.battleInit = true;
                     player.BattleMapXYZ[0] = player.Stage;
                     player.BattleMapXYZ[1] = player.Location[1];
                     player.BattleMapXYZ[2] = player.Location[0];
                     player.BattleMapXYZ[3] = player.StageDepth;
                     scene.DisplayObjectSceneLayer(player, ConsoleView.bkgLayer, false);
-                    //player.Location[1] = player.BattleMapXYZ[1];
-                    //player.Location[0] = player.BattleMapXYZ[2];
+                    scene.DisplayObjectSceneLayer(opponent, opponent.Layer);
                     player.Location[1] = 10;
                     player.Location[0] = floor;
                     player.Animation = 0;
                     UpdatePlayerDisplay();
-                    scene.DisplayText("Battle Text", "You've encountered " + opponent.Name + "!", 36, 0, 8, 192, 8, 5);
+                    scene.DisplayText("Battle Text", opponent.Name + " has beckoned you!", 36, 0, 8, 192, 8, 5);
+
+                    if (opponent.Music != null)
+                        NAudio.PlayFile(opponent.Music);
+                    else
+                        NAudio.PlayFile(@"\TBQuestMusic\Standard Battle\encounter.mp3");
+
                     scene.DisplayPlayerInfo(1, 0);
                     scene.DisplayEnemyInfo(opponent.Level, opponent.Name);
-                    //player.Stage = player.BattleMapXYZ[0];
-                    //player.StageDepth = player.BattleMapXYZ[3];
-                    //control.LoadStage();
+                }
+                if (Area.maps[player.Stage][player.StageDepth].Spawns.Count > 0)
+                {
+                    int chance = 0;
+                    foreach (var mobSpawn in Area.maps[player.Stage][player.StageDepth].Spawns)
+                        chance += mobSpawn._chance;
+
+                    int i = 0;
+                    Random rng = new Random();
+                    int rand = rng.Next(0, chance);
+                    while ((rand -= Area.maps[player.Stage][player.StageDepth].Spawns[i]._chance) >= 0) i++;
+
+                    if (Area.maps[player.Stage][player.StageDepth].Spawns[i]._mob != null)
+                    {
+                        Area.maps[player.Stage][player.StageDepth].Spawns[i]._mob.PrintObject(scene);
+                        opponent = new Enemy(Area.maps[player.Stage][player.StageDepth].Spawns[i]._mob);
+                        player.battleInit = true;
+                        player.BattleMapXYZ[0] = player.Stage;
+                        player.BattleMapXYZ[1] = player.Location[1];
+                        player.BattleMapXYZ[2] = player.Location[0];
+                        player.BattleMapXYZ[3] = player.StageDepth;
+                        scene.DisplayObjectSceneLayer(player, ConsoleView.bkgLayer, false);
+                        scene.DisplayObjectSceneLayer(opponent, opponent.Layer);
+                        player.Location[1] = 10;
+                        player.Location[0] = floor;
+                        player.Animation = 0;
+                        UpdatePlayerDisplay();
+                        scene.DisplayText("Battle Text", "You've encountered " + opponent.Name + "!", 36, 0, 8, 192, 8, 5);
+                        NAudio.PlayFile(@"\TBQuestMusic\Standard Battle\encounter.mp3");
+                        scene.DisplayPlayerInfo(1, 0);
+                        scene.DisplayEnemyInfo(opponent.Level, opponent.Name);
+                    }
                 }
             }
         }
@@ -552,6 +602,15 @@ namespace TBQuestGame
                     UpdatePlayerLevel();
                     ISpeak speak = npcList[0] as ISpeak;
                     scene.DisplayText(npcList[0].Name, speak.Speak());
+                    if(npcList[0].Gift != null)
+                    {
+                        scene.DisplayText("Item Get", npcList[0].Gift.Name + " was added to your inventory!");
+                        player.Experience += npcList[0].Gift.Experience;
+                        npcList[0].Gift.Experience = 0;
+                        UpdatePlayerLevel();
+                        player.Inventory.Add(npcList[0].Gift);
+                        npcList[0].Gift = null;
+                    }
                 }
                 else
                     scene.DisplayText(npcList[0].Name, npcList[0].Dialogue);
